@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Catégories principales de pièces de rechange STEG -->
+        
+        <!-- Électrique -->
+        <record id="category_electrical" model="steg.spare.part.category">
+            <field name="name">Électrique</field>
+            <field name="code">ELEC</field>
+            <field name="description">Pièces électriques et composants électroniques</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Sous-catégories électriques -->
+        <record id="category_electrical_cables" model="steg.spare.part.category">
+            <field name="name">Câbles et Conducteurs</field>
+            <field name="code">ELEC-CAB</field>
+            <field name="description">Câbles électriques, conducteurs et accessoires</field>
+            <field name="parent_id" ref="category_electrical"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="category_electrical_transformers" model="steg.spare.part.category">
+            <field name="name">Transformateurs</field>
+            <field name="code">ELEC-TRANS</field>
+            <field name="description">Transformateurs et pièces associées</field>
+            <field name="parent_id" ref="category_electrical"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="category_electrical_protection" model="steg.spare.part.category">
+            <field name="name">Protection</field>
+            <field name="code">ELEC-PROT</field>
+            <field name="description">Dispositifs de protection électrique</field>
+            <field name="parent_id" ref="category_electrical"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="category_electrical_switching" model="steg.spare.part.category">
+            <field name="name">Appareillage de Coupure</field>
+            <field name="code">ELEC-SWITCH</field>
+            <field name="description">Disjoncteurs, sectionneurs, contacteurs</field>
+            <field name="parent_id" ref="category_electrical"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- Mécanique -->
+        <record id="category_mechanical" model="steg.spare.part.category">
+            <field name="name">Mécanique</field>
+            <field name="code">MECA</field>
+            <field name="description">Pièces mécaniques et composants</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Sous-catégories mécaniques -->
+        <record id="category_mechanical_bearings" model="steg.spare.part.category">
+            <field name="name">Roulements et Paliers</field>
+            <field name="code">MECA-BEAR</field>
+            <field name="description">Roulements, paliers et accessoires</field>
+            <field name="parent_id" ref="category_mechanical"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="category_mechanical_seals" model="steg.spare.part.category">
+            <field name="name">Joints et Étanchéité</field>
+            <field name="code">MECA-SEAL</field>
+            <field name="description">Joints, garnitures et systèmes d'étanchéité</field>
+            <field name="parent_id" ref="category_mechanical"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="category_mechanical_fasteners" model="steg.spare.part.category">
+            <field name="name">Fixations</field>
+            <field name="code">MECA-FAST</field>
+            <field name="description">Boulons, vis, écrous et fixations diverses</field>
+            <field name="parent_id" ref="category_mechanical"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Hydraulique -->
+        <record id="category_hydraulic" model="steg.spare.part.category">
+            <field name="name">Hydraulique</field>
+            <field name="code">HYDR</field>
+            <field name="description">Composants hydrauliques</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Sous-catégories hydrauliques -->
+        <record id="category_hydraulic_pumps" model="steg.spare.part.category">
+            <field name="name">Pompes</field>
+            <field name="code">HYDR-PUMP</field>
+            <field name="description">Pompes hydrauliques et pièces détachées</field>
+            <field name="parent_id" ref="category_hydraulic"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="category_hydraulic_valves" model="steg.spare.part.category">
+            <field name="name">Vannes et Robinets</field>
+            <field name="code">HYDR-VALV</field>
+            <field name="description">Vannes, robinets et accessoires</field>
+            <field name="parent_id" ref="category_hydraulic"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="category_hydraulic_filters" model="steg.spare.part.category">
+            <field name="name">Filtres</field>
+            <field name="code">HYDR-FILT</field>
+            <field name="description">Filtres hydrauliques et éléments filtrants</field>
+            <field name="parent_id" ref="category_hydraulic"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Instrumentation -->
+        <record id="category_instrumentation" model="steg.spare.part.category">
+            <field name="name">Instrumentation</field>
+            <field name="code">INST</field>
+            <field name="description">Instruments de mesure et contrôle</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- Sous-catégories instrumentation -->
+        <record id="category_instrumentation_sensors" model="steg.spare.part.category">
+            <field name="name">Capteurs</field>
+            <field name="code">INST-SENS</field>
+            <field name="description">Capteurs et transmetteurs</field>
+            <field name="parent_id" ref="category_instrumentation"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="category_instrumentation_meters" model="steg.spare.part.category">
+            <field name="name">Compteurs</field>
+            <field name="code">INST-METER</field>
+            <field name="description">Compteurs électriques et accessoires</field>
+            <field name="parent_id" ref="category_instrumentation"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Sécurité -->
+        <record id="category_safety" model="steg.spare.part.category">
+            <field name="name">Sécurité</field>
+            <field name="code">SAFE</field>
+            <field name="description">Équipements de sécurité</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- Consommables -->
+        <record id="category_consumables" model="steg.spare.part.category">
+            <field name="name">Consommables</field>
+            <field name="code">CONS</field>
+            <field name="description">Produits consommables et fournitures</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <!-- Sous-catégories consommables -->
+        <record id="category_consumables_lubricants" model="steg.spare.part.category">
+            <field name="name">Lubrifiants</field>
+            <field name="code">CONS-LUB</field>
+            <field name="description">Huiles, graisses et lubrifiants</field>
+            <field name="parent_id" ref="category_consumables"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="category_consumables_chemicals" model="steg.spare.part.category">
+            <field name="name">Produits Chimiques</field>
+            <field name="code">CONS-CHEM</field>
+            <field name="description">Produits chimiques et solvants</field>
+            <field name="parent_id" ref="category_consumables"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Types d'équipements STEG -->
+        
+        <!-- Centrales de production -->
+        <record id="equipment_type_thermal_plant" model="steg.equipment.type">
+            <field name="name">Centrale Thermique</field>
+            <field name="code">THERM</field>
+            <field name="description">Centrales de production thermique</field>
+        </record>
+
+        <record id="equipment_type_gas_plant" model="steg.equipment.type">
+            <field name="name">Centrale à Gaz</field>
+            <field name="code">GAS</field>
+            <field name="description">Centrales de production au gaz</field>
+        </record>
+
+        <record id="equipment_type_renewable" model="steg.equipment.type">
+            <field name="name">Énergies Renouvelables</field>
+            <field name="code">RENEW</field>
+            <field name="description">Installations d'énergies renouvelables</field>
+        </record>
+
+        <!-- Postes électriques -->
+        <record id="equipment_type_substation_ht" model="steg.equipment.type">
+            <field name="name">Poste HT</field>
+            <field name="code">POST-HT</field>
+            <field name="description">Postes haute tension</field>
+        </record>
+
+        <record id="equipment_type_substation_mt" model="steg.equipment.type">
+            <field name="name">Poste MT</field>
+            <field name="code">POST-MT</field>
+            <field name="description">Postes moyenne tension</field>
+        </record>
+
+        <record id="equipment_type_substation_bt" model="steg.equipment.type">
+            <field name="name">Poste BT</field>
+            <field name="code">POST-BT</field>
+            <field name="description">Postes basse tension</field>
+        </record>
+
+        <!-- Lignes électriques -->
+        <record id="equipment_type_transmission_line" model="steg.equipment.type">
+            <field name="name">Ligne de Transport</field>
+            <field name="code">LIGNE-T</field>
+            <field name="description">Lignes de transport électrique</field>
+        </record>
+
+        <record id="equipment_type_distribution_line" model="steg.equipment.type">
+            <field name="name">Ligne de Distribution</field>
+            <field name="code">LIGNE-D</field>
+            <field name="description">Lignes de distribution électrique</field>
+        </record>
+
+        <!-- Équipements auxiliaires -->
+        <record id="equipment_type_auxiliary" model="steg.equipment.type">
+            <field name="name">Équipements Auxiliaires</field>
+            <field name="code">AUX</field>
+            <field name="description">Équipements auxiliaires et support</field>
+        </record>
+
+    </data>
+</odoo>

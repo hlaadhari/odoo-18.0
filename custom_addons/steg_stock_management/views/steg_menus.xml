@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Menu principal STEG -->
+        <menuitem id="menu_steg_main" 
+                  name="STEG Stock" 
+                  sequence="5"
+                  web_icon="steg_stock_management,static/description/icon.png"/>
+
+        <!-- Sous-menu Pièces de Rechange -->
+        <menuitem id="menu_steg_spare_parts" 
+                  name="Pièces de Rechange" 
+                  parent="menu_steg_main" 
+                  sequence="10"/>
+
+        <menuitem id="menu_steg_spare_part_list" 
+                  name="Toutes les Pièces" 
+                  parent="menu_steg_spare_parts" 
+                  action="action_steg_spare_part" 
+                  sequence="10"/>
+
+        <menuitem id="menu_steg_spare_part_categories" 
+                  name="Catégories" 
+                  parent="menu_steg_spare_parts" 
+                  action="action_steg_spare_part_category" 
+                  sequence="20"/>
+
+        <!-- Sous-menu Équipements -->
+        <menuitem id="menu_steg_equipment" 
+                  name="Équipements" 
+                  parent="menu_steg_main" 
+                  sequence="20"/>
+
+        <menuitem id="menu_steg_equipment_list" 
+                  name="Tous les Équipements" 
+                  parent="menu_steg_equipment" 
+                  action="action_steg_equipment" 
+                  sequence="10"/>
+
+        <menuitem id="menu_steg_equipment_types" 
+                  name="Types d'Équipements" 
+                  parent="menu_steg_equipment" 
+                  action="action_steg_equipment_type" 
+                  sequence="20"/>
+
+        <menuitem id="menu_steg_locations" 
+                  name="Emplacements STEG" 
+                  parent="menu_steg_equipment" 
+                  action="action_steg_location" 
+                  sequence="30"/>
+
+        <!-- Sous-menu Stock -->
+        <menuitem id="menu_steg_stock" 
+                  name="Gestion Stock" 
+                  parent="menu_steg_main" 
+                  sequence="30"/>
+
+        <!-- Placeholder pour les actions futures -->
+
+    </data>
+</odoo>

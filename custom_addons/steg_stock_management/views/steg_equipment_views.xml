@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue liste des équipements STEG -->
+        <record id="view_steg_equipment_tree" model="ir.ui.view">
+            <field name="name">steg.equipment.tree</field>
+            <field name="model">steg.equipment</field>
+            <field name="arch" type="xml">
+                <tree string="Équipements STEG">
+                    <field name="equipment_code"/>
+                    <field name="name"/>
+                    <field name="equipment_type_id"/>
+                    <field name="location_id"/>
+                    <field name="state"/>
+                    <field name="condition"/>
+                    <field name="criticality"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue formulaire des équipements STEG -->
+        <record id="view_steg_equipment_form" model="ir.ui.view">
+            <field name="name">steg.equipment.form</field>
+            <field name="model">steg.equipment</field>
+            <field name="arch" type="xml">
+                <form string="Équipement STEG">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de l'équipement"/>
+                            </h1>
+                            <h2>
+                                <field name="equipment_code" placeholder="Code équipement"/>
+                            </h2>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="equipment_type_id"/>
+                                <field name="location_id"/>
+                                <field name="condition"/>
+                                <field name="criticality"/>
+                            </group>
+                            <group>
+                                <field name="manufacturer"/>
+                                <field name="model"/>
+                                <field name="serial_number"/>
+                                <field name="installation_date"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour les équipements -->
+        <record id="action_steg_equipment" model="ir.actions.act_window">
+            <field name="name">Équipements STEG</field>
+            <field name="res_model">steg.equipment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Action pour les types d'équipements -->
+        <record id="action_steg_equipment_type" model="ir.actions.act_window">
+            <field name="name">Types d'Équipements</field>
+            <field name="res_model">steg.equipment.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Action pour les emplacements STEG -->
+        <record id="action_steg_location" model="ir.actions.act_window">
+            <field name="name">Emplacements STEG</field>
+            <field name="res_model">steg.location</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

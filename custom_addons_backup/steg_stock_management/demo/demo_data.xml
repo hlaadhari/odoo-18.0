@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Produits de démonstration -->
+        <record id="demo_product_cable_ethernet" model="product.template">
+            <field name="name">Câble Ethernet Cat6</field>
+            <field name="steg_reference">STEG-CAB-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="category_telecom_cables"/>
+            <field name="list_price">25.0</field>
+            <field name="standard_price">20.0</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+            <field name="uom_po_id" ref="uom.product_uom_meter"/>
+            <field name="barcode">STEG000001</field>
+            <field name="minimum_stock_level">100.0</field>
+            <field name="maximum_stock_level">500.0</field>
+            <field name="steg_division_ids" eval="[(4, ref('division_telecom'))]"/>
+            <field name="technical_specs">Câble Ethernet Cat6 UTP, 4 paires, 23 AWG, 305m</field>
+            <field name="installation_notes">Respecter le rayon de courbure minimum de 4 fois le diamètre</field>
+        </record>
+
+        <record id="demo_product_automate" model="product.template">
+            <field name="name">Automate Schneider M221</field>
+            <field name="steg_reference">STEG-AUT-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="category_teleconduite_automates"/>
+            <field name="list_price">850.0</field>
+            <field name="standard_price">680.0</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="barcode">STEG000002</field>
+            <field name="minimum_stock_level">2.0</field>
+            <field name="maximum_stock_level">10.0</field>
+            <field name="steg_division_ids" eval="[(4, ref('division_teleconduite'))]"/>
+            <field name="technical_specs">Automate programmable Modicon M221, 16 E/S, Ethernet</field>
+            <field name="installation_notes">Température de fonctionnement: 0°C à +60°C</field>
+        </record>
+
+        <record id="demo_product_serveur" model="product.template">
+            <field name="name">Serveur Dell PowerEdge R740</field>
+            <field name="steg_reference">STEG-SRV-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="category_scada_serveurs"/>
+            <field name="list_price">4500.0</field>
+            <field name="standard_price">3800.0</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="barcode">STEG000003</field>
+            <field name="minimum_stock_level">1.0</field>
+            <field name="maximum_stock_level">3.0</field>
+            <field name="steg_division_ids" eval="[(4, ref('division_scada'))]"/>
+            <field name="technical_specs">Serveur 2U, 2x Intel Xeon, 32GB RAM, 2x 1TB SSD</field>
+            <field name="installation_notes">Nécessite alimentation redondante et climatisation</field>
+        </record>
+
+        <record id="demo_product_batterie" model="product.template">
+            <field name="name">Batterie UPS 12V 100Ah</field>
+            <field name="steg_reference">STEG-BAT-001</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="category_communes_alimentations"/>
+            <field name="list_price">180.0</field>
+            <field name="standard_price">150.0</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="barcode">STEG000004</field>
+            <field name="minimum_stock_level">5.0</field>
+            <field name="maximum_stock_level">20.0</field>
+            <field name="is_common_part">True</field>
+            <field name="technical_specs">Batterie plomb-acide étanche, 12V 100Ah, durée de vie 5 ans</field>
+            <field name="installation_notes">Stocker dans un endroit sec et ventilé</field>
+        </record>
+
+        <!-- Stock initial -->
+        <record id="demo_stock_cable" model="stock.quant">
+            <field name="product_id" ref="demo_product_cable_ethernet"/>
+            <field name="location_id" ref="location_steg_telecom"/>
+            <field name="quantity">250.0</field>
+        </record>
+
+        <record id="demo_stock_automate" model="stock.quant">
+            <field name="product_id" ref="demo_product_automate"/>
+            <field name="location_id" ref="location_steg_teleconduite"/>
+            <field name="quantity">5.0</field>
+        </record>
+
+        <record id="demo_stock_serveur" model="stock.quant">
+            <field name="product_id" ref="demo_product_serveur"/>
+            <field name="location_id" ref="location_steg_scada"/>
+            <field name="quantity">2.0</field>
+        </record>
+
+        <record id="demo_stock_batterie" model="stock.quant">
+            <field name="product_id" ref="demo_product_batterie"/>
+            <field name="location_id" ref="location_steg_communs"/>
+            <field name="quantity">12.0</field>
+        </record>
+    </data>
+</odoo>

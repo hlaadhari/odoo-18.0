@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15
+    container_name: odoo_debug_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  odoo:
+    image: odoo:18.0
+    container_name: odoo_debug_app
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - ./custom_addons:/mnt/extra-addons:ro
+    restart: unless-stopped
+    command: ["odoo", "--dev=all", "--log-level=debug"]
+
+volumes:
+  odoo-db-data:

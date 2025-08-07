@@ -1,118 +1,46 @@
-
 services:
   db:
-    image: postgres:13
+    image: postgres:15
     container_name: odoo_steg_db
     environment:
-      - POSTGRES_DB=odoo_steg
+      - POSTGRES_DB=steg_stock
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=steg_odoo_2024
-      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
-      - ./backups:/backups
+      - odoo-db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
-    networks:
-      - odoo_steg_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d steg_stock"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   odoo:
-    # Option 1: Utiliser l'image officielle
-    # image: odoo:17.0
-    
-    # Option 2: Construire notre image personnalisée
     build:
       context: .
       dockerfile: Dockerfile
     container_name: odoo_steg_app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8069:8069"
-      - "8072:8072"  # Pour le chat en direct si activé
     environment:
       - HOST=db
       - USER=odoo
       - PASSWORD=steg_odoo_2024
-      - DB_NAME=odoo_steg
+      - PGPASSWORD=steg_odoo_2024
     volumes:
       # Configuration
       - ./config:/etc/odoo
       # Modules personnalisés
-      - ./custom_addons:/mnt/custom-addons
-      - ./addons:/mnt/extra-addons
-      # Données et fichiers
+      - ./custom_addons:/mnt/extra-addons
+      # Données
       - odoo-web-data:/var/lib/odoo
-      - ./static:/var/lib/odoo/static
-      - ./reports:/var/lib/odoo/reports
-      - ./logs:/var/log/odoo
-      # Backups
-      - ./backups:/backups
     restart: unless-stopped
-    networks:
-      - odoo_steg_network
-    # Pour le développement, décommentez la ligne suivante
-    # command: -- --dev=reload,qweb,werkzeug,xml
-
-  # Service optionnel : Nginx pour le reverse proxy (production)
-  nginx:
-    image: nginx:alpine
-    container_name: odoo_steg_nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
-    depends_on:
-      - odoo
-    restart: unless-stopped
-    networks:
-      - odoo_steg_network
-    profiles:
-      - production
-
-  # Service optionnel : Redis pour les sessions (performance)
-  redis:
-    image: redis:alpine
-    container_name: odoo_steg_redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    networks:
-      - odoo_steg_network
-    profiles:
-      - production
-
-  # Service pour les backups automatiques
-  backup:
-    image: postgres:13
-    container_name: odoo_steg_backup
-    depends_on:
-      - db
-    volumes:
-      - ./backups:/backups
-      - ./scripts:/scripts
-    environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_DB=odoo_steg
-      - POSTGRES_USER=odoo
-      - POSTGRES_PASSWORD=steg_odoo_2024
-    command: /bin/bash -c "sleep 10 && /scripts/backup.sh"
-    networks:
-      - odoo_steg_network
-    profiles:
-      - backup
 
 volumes:
   odoo-web-data:
-    driver: local
   odoo-db-data:
-    driver: local
-  redis-data:
-    driver: local
-
-networks:
-  odoo_steg_network:
-    driver: bridge

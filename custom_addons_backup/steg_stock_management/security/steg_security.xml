@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Catégorie de sécurité STEG -->
+        <record id="module_category_steg" model="ir.module.category">
+            <field name="name">STEG Stock Management</field>
+            <field name="description">Gestion des stocks STEG</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Groupe Utilisateur STEG -->
+        <record id="group_steg_user" model="res.groups">
+            <field name="name">STEG Stock User</field>
+            <field name="category_id" ref="module_category_steg"/>
+            <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+        </record>
+
+        <!-- Groupe Manager STEG -->
+        <record id="group_steg_manager" model="res.groups">
+            <field name="name">STEG Stock Manager</field>
+            <field name="category_id" ref="module_category_steg"/>
+            <field name="implied_ids" eval="[(4, ref('group_steg_user')), (4, ref('stock.group_stock_manager'))]"/>
+        </record>
+    </data>
+</odoo>

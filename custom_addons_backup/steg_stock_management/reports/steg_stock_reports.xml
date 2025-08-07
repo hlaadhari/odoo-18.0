@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Rapport de stock STEG -->
+    <record id="action_report_steg_stock" model="ir.actions.report">
+        <field name="name">Rapport de Stock STEG</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">steg_stock_management.report_steg_stock</field>
+        <field name="report_file">steg_stock_management.report_steg_stock</field>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template du rapport -->
+    <template id="report_steg_stock">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <!-- En-tête STEG -->
+                        <div class="row">
+                            <div class="col-8">
+                                <h2>Rapport de Stock STEG</h2>
+                                <p>Société Tunisienne de l'Électricité et du Gaz</p>
+                            </div>
+                            <div class="col-4 text-right">
+                                <p>Date: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/></p>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <!-- Informations produit -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Référence STEG:</strong> <span t-field="o.steg_reference"/><br/>
+                                <strong>Nom:</strong> <span t-field="o.name"/><br/>
+                                <strong>Code-barres:</strong> <span t-field="o.barcode"/><br/>
+                                <strong>Catégorie:</strong> <span t-field="o.categ_id.name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Stock Disponible:</strong> <span t-field="o.qty_available"/> <span t-field="o.uom_id.name"/><br/>
+                                <strong>Stock Minimum:</strong> <span t-field="o.minimum_stock_level"/><br/>
+                                <strong>Stock Maximum:</strong> <span t-field="o.maximum_stock_level"/><br/>
+                                <strong>Emplacement Principal:</strong> <span t-field="o.steg_location_id.name"/>
+                            </div>
+                        </div>
+
+                        <!-- Divisions autorisées -->
+                        <div t-if="o.steg_division_ids">
+                            <h4>Divisions Autorisées</h4>
+                            <ul>
+                                <li t-foreach="o.steg_division_ids" t-as="division">
+                                    <span t-field="division.name"/> (<span t-field="division.code"/>)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Spécifications techniques -->
+                        <div t-if="o.technical_specs">
+                            <h4>Spécifications Techniques</h4>
+                            <p t-field="o.technical_specs"/>
+                        </div>
+
+                        <!-- Notes d'installation -->
+                        <div t-if="o.installation_notes">
+                            <h4>Notes d'Installation</h4>
+                            <p t-field="o.installation_notes"/>
+                        </div>
+
+                        <!-- Code-barres -->
+                        <div t-if="o.barcode" class="text-center mt32">
+                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.barcode, 600, 100)" style="width:300px;height:50px"/>
+                            <br/>
+                            <span t-field="o.barcode"/>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Rapport de mouvement STEG -->
+    <record id="action_report_steg_picking" model="ir.actions.report">
+        <field name="name">Bon de Mouvement STEG</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">steg_stock_management.report_steg_picking</field>
+        <field name="report_file">steg_stock_management.report_steg_picking</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template du bon de mouvement -->
+    <template id="report_steg_picking">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <!-- En-tête -->
+                        <div class="row">
+                            <div class="col-8">
+                                <h2>Bon de Mouvement STEG</h2>
+                                <p>Société Tunisienne de l'Électricité et du Gaz</p>
+                            </div>
+                            <div class="col-4 text-right">
+                                <p><strong>N° STEG:</strong> <span t-field="o.steg_request_number"/></p>
+                                <p><strong>Date:</strong> <span t-field="o.create_date" t-options="{'widget': 'date'}"/></p>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <!-- Informations générales -->
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Type:</strong> <span t-field="o.picking_type_id.name"/><br/>
+                                <strong>Division:</strong> <span t-field="o.steg_division_id.name"/><br/>
+                                <strong>Demandeur:</strong> <span t-field="o.steg_requester_id.name"/><br/>
+                                <strong>Urgence:</strong> 
+                                <span t-if="o.steg_urgency == 'low'">Normale</span>
+                                <span t-if="o.steg_urgency == 'medium'">Urgente</span>
+                                <span t-if="o.steg_urgency == 'high'">Très Urgente</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>État:</strong> <span t-field="o.state"/><br/>
+                                <strong>Validation:</strong> <span t-field="o.steg_validation_state"/><br/>
+                                <strong>Validateur:</strong> <span t-field="o.steg_validator_id.name"/><br/>
+                                <strong>Date Validation:</strong> <span t-field="o.steg_validation_date" t-options="{'widget': 'datetime'}"/>
+                            </div>
+                        </div>
+
+                        <!-- Objet de la demande -->
+                        <div t-if="o.steg_purpose">
+                            <h4>Objet de la Demande</h4>
+                            <p t-field="o.steg_purpose"/>
+                        </div>
+
+                        <!-- Détail des pièces -->
+                        <h4>Détail des Pièces</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Référence STEG</th>
+                                    <th>Désignation</th>
+                                    <th>Quantité</th>
+                                    <th>Unité</th>
+                                    <th>Emplacement Source</th>
+                                    <th>Emplacement Destination</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.move_ids_without_package" t-as="move">
+                                    <td><span t-field="move.product_id.steg_reference"/></td>
+                                    <td><span t-field="move.product_id.name"/></td>
+                                    <td><span t-field="move.product_uom_qty"/></td>
+                                    <td><span t-field="move.product_uom.name"/></td>
+                                    <td><span t-field="move.location_id.name"/></td>
+                                    <td><span t-field="move.location_dest_id.name"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Notes techniques -->
+                        <div t-if="o.steg_notes">
+                            <h4>Notes Techniques</h4>
+                            <p t-field="o.steg_notes"/>
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="row mt64">
+                            <div class="col-4 text-center">
+                                <p>Demandeur</p>
+                                <br/><br/>
+                                <p>_________________</p>
+                                <p t-field="o.steg_requester_id.name"/>
+                            </div>
+                            <div class="col-4 text-center">
+                                <p>Validateur</p>
+                                <br/><br/>
+                                <p>_________________</p>
+                                <p t-field="o.steg_validator_id.name"/>
+                            </div>
+                            <div class="col-4 text-center">
+                                <p>Magasinier</p>
+                                <br/><br/>
+                                <p>_________________</p>
+                                <p>Date: ___________</p>
+                            </div>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

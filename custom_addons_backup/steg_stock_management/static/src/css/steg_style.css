@@ -1,0 +1,277 @@
+/* Styles STEG pour le module de gestion des stocks */
+
+/* Couleurs STEG */
+:root {
+    --steg-primary: #1e3a8a;
+    --steg-secondary: #3b82f6;
+    --steg-accent: #f59e0b;
+    --steg-success: #10b981;
+    --steg-warning: #f59e0b;
+    --steg-danger: #ef4444;
+    --steg-light: #f8fafc;
+    --steg-dark: #1e293b;
+}
+
+/* Header STEG */
+.steg-header {
+    background: linear-gradient(135deg, var(--steg-primary), var(--steg-secondary));
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.steg-logo {
+    height: 60px;
+    width: auto;
+}
+
+/* Dashboard STEG */
+.steg-dashboard {
+    padding: 20px;
+}
+
+.steg-dashboard-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--steg-primary);
+}
+
+.steg-dashboard-card h3 {
+    color: var(--steg-primary);
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.steg-stat-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--steg-light);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.steg-stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--steg-primary);
+}
+
+.steg-stat-label {
+    color: var(--steg-dark);
+    font-size: 0.9rem;
+}
+
+/* Badges de statut */
+.steg-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.steg-badge-draft {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.steg-badge-submitted {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.steg-badge-validated {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.steg-badge-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Urgence */
+.steg-urgency-low {
+    color: var(--steg-success);
+}
+
+.steg-urgency-medium {
+    color: var(--steg-warning);
+}
+
+.steg-urgency-high {
+    color: var(--steg-danger);
+    font-weight: bold;
+}
+
+/* Division colors */
+.steg-division-telecom {
+    border-left-color: #3b82f6;
+}
+
+.steg-division-teleconduite {
+    border-left-color: #10b981;
+}
+
+.steg-division-scada {
+    border-left-color: #f59e0b;
+}
+
+.steg-division-communs {
+    border-left-color: #6b7280;
+}
+
+/* Formulaires STEG */
+.steg-form-section {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.steg-form-section h4 {
+    color: var(--steg-primary);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* Boutons STEG */
+.btn-steg-primary {
+    background-color: var(--steg-primary);
+    border-color: var(--steg-primary);
+    color: white;
+}
+
+.btn-steg-primary:hover {
+    background-color: #1e40af;
+    border-color: #1e40af;
+}
+
+.btn-steg-secondary {
+    background-color: var(--steg-secondary);
+    border-color: var(--steg-secondary);
+    color: white;
+}
+
+/* Code-barres */
+.steg-barcode {
+    text-align: center;
+    padding: 16px;
+    background: white;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+}
+
+.steg-barcode img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Stock levels */
+.steg-stock-low {
+    color: var(--steg-danger);
+    font-weight: bold;
+}
+
+.steg-stock-medium {
+    color: var(--steg-warning);
+}
+
+.steg-stock-good {
+    color: var(--steg-success);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .steg-dashboard-card {
+        padding: 16px;
+    }
+    
+    .steg-stat-box {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .steg-stat-number {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+}
+
+/* Kanban cards */
+.o_kanban_card.steg-card {
+    border-top: 3px solid var(--steg-primary);
+}
+
+.o_kanban_card.steg-card .o_kanban_record_title {
+    color: var(--steg-primary);
+}
+
+/* Tables */
+.table-steg {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-steg th {
+    background-color: var(--steg-primary);
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.table-steg td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-steg tr:hover {
+    background-color: var(--steg-light);
+}
+
+/* Notifications */
+.steg-notification {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.steg-notification-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid var(--steg-success);
+}
+
+.steg-notification-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid var(--steg-warning);
+}
+
+.steg-notification-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid var(--steg-danger);
+}
+
+/* Loading spinner */
+.steg-spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--steg-primary);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

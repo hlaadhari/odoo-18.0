@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue Formulaire Emplacement STEG -->
+        <record id="stock_location_form_view_steg" model="ir.ui.view">
+            <field name="name">stock.location.form.steg</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Ajouter boutons d'action -->
+                <div name="button_box" position="inside">
+                    <button name="action_view_stock_quants" type="object" 
+                            class="oe_stat_button" icon="fa-cubes">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Stock</span>
+                        </div>
+                    </button>
+                    <button name="action_view_stock_moves" type="object" 
+                            class="oe_stat_button" icon="fa-exchange">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Mouvements</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Ajouter les champs STEG -->
+                <field name="usage" position="after">
+                    <field name="steg_division_id"/>
+                    <field name="steg_location_type"/>
+                    <field name="steg_access_level"/>
+                </field>
+
+                <!-- Ajouter onglet STEG -->
+                <notebook position="inside">
+                    <page string="STEG" name="steg_info">
+                        <group>
+                            <group name="steg_management">
+                                <field name="steg_responsible_id"/>
+                                <field name="steg_capacity"/>
+                                <field name="steg_current_usage" widget="progressbar"/>
+                            </group>
+                            <group name="steg_technical">
+                                <field name="steg_temperature_controlled"/>
+                                <field name="steg_humidity_controlled"/>
+                                <field name="steg_security_level"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="steg_notes" nolabel="1" colspan="2"/>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <!-- Vue Liste Emplacement STEG -->
+        <record id="stock_location_tree_view_steg" model="ir.ui.view">
+            <field name="name">stock.location.tree.steg</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_tree2"/>
+            <field name="arch" type="xml">
+                <field name="usage" position="after">
+                    <field name="steg_division_id" optional="show"/>
+                    <field name="steg_location_type" optional="hide"/>
+                    <field name="steg_access_level" optional="hide"/>
+                    <field name="steg_responsible_id" optional="hide"/>
+                    <field name="steg_current_usage" optional="show" widget="progressbar"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Emplacement STEG -->
+        <record id="stock_location_search_view_steg" model="ir.ui.view">
+            <field name="name">stock.location.search.steg</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_search"/>
+            <field name="arch" type="xml">
+                <field name="location_id" position="after">
+                    <field name="steg_division_id"/>
+                    <field name="steg_responsible_id"/>
+                </field>
+                
+                <filter name="internal" position="after">
+                    <separator/>
+                    <filter string="Division Télécom" name="division_telecom" 
+                            domain="[('steg_division_id.code', '=', 'TEL')]"/>
+                    <filter string="Division Téléconduite" name="division_teleconduite" 
+                            domain="[('steg_division_id.code', '=', 'TCD')]"/>
+                    <filter string="Division SCADA" name="division_scada" 
+                            domain="[('steg_division_id.code', '=', 'SCA')]"/>
+                    <filter string="Pièces Communes" name="division_commune" 
+                            domain="[('steg_division_id.code', '=', 'COM')]"/>
+                    
+                    <separator/>
+                    <filter string="Entrepôts Principaux" name="main_warehouses" 
+                            domain="[('steg_location_type', '=', 'main')]"/>
+                    <filter string="Ateliers" name="workshops" 
+                            domain="[('steg_location_type', '=', 'workshop')]"/>
+                    <filter string="Bureaux" name="offices" 
+                            domain="[('steg_location_type', '=', 'office')]"/>
+                </filter>
+                
+                <group expand="0" string="Group By" position="inside">
+                    <filter string="Division STEG" name="group_steg_division" 
+                            context="{'group_by': 'steg_division_id'}"/>
+                    <filter string="Type Emplacement" name="group_location_type" 
+                            context="{'group_by': 'steg_location_type'}"/>
+                    <filter string="Niveau d'Accès" name="group_access_level" 
+                            context="{'group_by': 'steg_access_level'}"/>
+                    <filter string="Responsable" name="group_responsible" 
+                            context="{'group_by': 'steg_responsible_id'}"/>
+                </group>
+            </field>
+        </record>
+
+        <!-- Action pour les Emplacements STEG -->
+        <record id="stock_location_action_steg" model="ir.actions.act_window">
+            <field name="name">Emplacements STEG</field>
+            <field name="res_model">stock.location</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('steg_division_id', '!=', False)]</field>
+            <field name="context">{'search_default_internal': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer un nouvel emplacement STEG
+                </p>
+                <p>
+                    Organisez vos emplacements de stock par division STEG
+                    avec des niveaux d'accès et des responsables définis.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Stock Quant STEG -->
+        <record id="stock_quant_form_view_steg" model="ir.ui.view">
+            <field name="name">stock.quant.form.steg</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_form"/>
+            <field name="arch" type="xml">
+                <header position="inside">
+                    <button name="action_steg_inventory" type="object" 
+                            string="Marquer Inventorié" class="oe_highlight"/>
+                </header>
+                
+                <field name="location_id" position="after">
+                    <field name="steg_division_id" readonly="1"/>
+                    <field name="steg_last_inventory_date" readonly="1"/>
+                    <field name="steg_inventory_user_id" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Vue Liste Stock Quant STEG -->
+        <record id="stock_quant_tree_view_steg" model="ir.ui.view">
+            <field name="name">stock.quant.tree.steg</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+            <field name="arch" type="xml">
+                <field name="location_id" position="after">
+                    <field name="steg_division_id" optional="show"/>
+                    <field name="steg_last_inventory_date" optional="hide"/>
+                    <field name="steg_inventory_user_id" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Stock Quant STEG -->
+        <record id="stock_quant_search_view_steg" model="ir.ui.view">
+            <field name="name">stock.quant.search.steg</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.stock_quant_search"/>
+            <field name="arch" type="xml">
+                <field name="location_id" position="after">
+                    <field name="steg_division_id"/>
+                    <field name="steg_inventory_user_id"/>
+                </field>
+                
+                <filter name="internal_loc" position="after">
+                    <separator/>
+                    <filter string="Division Télécom" name="division_telecom" 
+                            domain="[('steg_division_id.code', '=', 'TEL')]"/>
+                    <filter string="Division Téléconduite" name="division_teleconduite" 
+                            domain="[('steg_division_id.code', '=', 'TCD')]"/>
+                    <filter string="Division SCADA" name="division_scada" 
+                            domain="[('steg_division_id.code', '=', 'SCA')]"/>
+                    <filter string="Pièces Communes" name="division_commune" 
+                            domain="[('steg_division_id.code', '=', 'COM')]"/>
+                    
+                    <separator/>
+                    <filter string="Inventorié ce mois" name="inventoried_this_month" 
+                            domain="[('steg_last_inventory_date', '>=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                    <filter string="Non inventorié" name="not_inventoried" 
+                            domain="[('steg_last_inventory_date', '=', False)]"/>
+                </filter>
+                
+                <group expand="0" string="Group By" position="inside">
+                    <filter string="Division STEG" name="group_steg_division" 
+                            context="{'group_by': 'steg_division_id'}"/>
+                    <filter string="Inventorié par" name="group_inventory_user" 
+                            context="{'group_by': 'steg_inventory_user_id'}"/>
+                </group>
+            </field>
+        </record>
+
+        <!-- Action pour le Stock par Division -->
+        <record id="stock_quant_action_steg_by_division" model="ir.actions.act_window">
+            <field name="name">Stock par Division STEG</field>
+            <field name="res_model">stock.quant</field>
+            <field name="view_mode">list,form,pivot,graph</field>
+            <field name="domain">[('steg_division_id', '!=', False), ('quantity', '>', 0)]</field>
+            <field name="context">{
+                'search_default_internal_loc': 1,
+                'search_default_group_steg_division': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucun stock trouvé
+                </p>
+                <p>
+                    Le stock sera visible ici une fois que vous aurez 
+                    des produits dans vos emplacements STEG.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

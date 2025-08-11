@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Template pour l'interface de scan -->
+        <template id="barcode_scanner_template">
+            <div class="steg_barcode_scanner">
+                <div class="scanner_header">
+                    <h3>Scanner STEG</h3>
+                </div>
+                <div class="scanner_input">
+                    <input type="text" id="barcode_input" placeholder="Scannez ou saisissez le code-barres" autofocus="true"/>
+                </div>
+                <div class="scanner_result" id="scanner_result">
+                    <!-- Résultats du scan -->
+                </div>
+            </div>
+        </template>
+
+    </data>
+</odoo>

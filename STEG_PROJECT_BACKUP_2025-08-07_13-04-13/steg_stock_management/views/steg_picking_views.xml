@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue Formulaire Stock Picking STEG -->
+        <record id="stock_picking_form_view_steg" model="ir.ui.view">
+            <field name="name">stock.picking.form.steg</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Ajouter boutons d'approbation -->
+                <header position="inside">
+                    <button name="action_steg_request_approval" type="object" 
+                            string="Demander Approbation" class="oe_highlight"
+                            attrs="{'invisible': ['|', ('steg_approval_required', '=', False), ('steg_approval_state', '!=', 'draft')]}"/>
+                    <button name="action_steg_approve" type="object" 
+                            string="Approuver" class="oe_highlight"
+                            attrs="{'invisible': [('steg_approval_state', '!=', 'pending')]}"/>
+                    <button name="action_steg_reject" type="object" 
+                            string="Rejeter" 
+                            attrs="{'invisible': [('steg_approval_state', '!=', 'pending')]}"/>
+                    
+                    <field name="steg_approval_state" widget="statusbar" 
+                           statusbar_visible="draft,pending,approved"
+                           attrs="{'invisible': [('steg_approval_required', '=', False)]}"/>
+                </header>
+
+                <!-- Ajouter les champs STEG après le partenaire -->
+                <field name="partner_id" position="after">
+                    <field name="steg_division_id" required="1"/>
+                    <field name="steg_request_type"/>
+                    <field name="steg_priority"/>
+                    <field name="steg_approval_required" invisible="1"/>
+                </field>
+
+                <!-- Ajouter onglet STEG -->
+                <notebook position="inside">
+                    <page string="STEG" name="steg_info">
+                        <group>
+                            <group name="steg_request">
+                                <field name="steg_requester_id" readonly="1"/>
+                                <field name="steg_work_order"/>
+                                <field name="steg_equipment_id"/>
+                                <field name="steg_location_work"/>
+                            </group>
+                            <group name="steg_approval" 
+                                   attrs="{'invisible': [('steg_approval_required', '=', False)]}">
+                                <field name="steg_approver_id" readonly="1"/>
+                                <field name="steg_approval_date" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Retour de Pièces">
+                            <group>
+                                <field name="steg_return_expected"/>
+                                <field name="steg_return_date" 
+                                       attrs="{'invisible': [('steg_return_expected', '=', False)]}"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Notes">
+                            <field name="steg_notes" nolabel="1" colspan="2"/>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <!-- Vue Liste Stock Picking STEG -->
+        <record id="stock_picking_tree_view_steg" model="ir.ui.view">
+            <field name="name">stock.picking.tree.steg</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="steg_division_id" optional="show"/>
+                    <field name="steg_request_type" optional="hide"/>
+                    <field name="steg_priority" optional="show" 
+                           widget="priority"/>
+                    <field name="steg_approval_state" optional="show" 
+                           widget="badge"
+                           decoration-info="steg_approval_state == 'draft'"
+                           decoration-warning="steg_approval_state == 'pending'"
+                           decoration-success="steg_approval_state == 'approved'"
+                           decoration-danger="steg_approval_state == 'rejected'"/>
+                    <field name="steg_requester_id" optional="hide"/>
+                    <field name="steg_approver_id" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Stock Picking STEG -->
+        <record id="stock_picking_search_view_steg" model="ir.ui.view">
+            <field name="name">stock.picking.search.steg</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="steg_division_id"/>
+                    <field name="steg_requester_id"/>
+                    <field name="steg_approver_id"/>
+                    <field name="steg_work_order"/>
+                </field>
+                
+                <filter name="available" position="after">
+                    <separator/>
+                    <filter string="Division Télécom" name="division_telecom" 
+                            domain="[('steg_division_id.code', '=', 'TEL')]"/>
+                    <filter string="Division Téléconduite" name="division_teleconduite" 
+                            domain="[('steg_division_id.code', '=', 'TCD')]"/>
+                    <filter string="Division SCADA" name="division_scada" 
+                            domain="[('steg_division_id.code', '=', 'SCA')]"/>
+                    <filter string="Pièces Communes" name="division_commune" 
+                            domain="[('steg_division_id.code', '=', 'COM')]"/>
+                    
+                    <separator/>
+                    <filter string="En Attente d'Approbation" name="pending_approval" 
+                            domain="[('steg_approval_state', '=', 'pending')]"/>
+                    <filter string="Approuvé" name="approved" 
+                            domain="[('steg_approval_state', '=', 'approved')]"/>
+                    <filter string="Mes Demandes" name="my_requests" 
+                            domain="[('steg_requester_id', '=', uid)]"/>
+                    <filter string="À Approuver" name="to_approve" 
+                            domain="[('steg_approval_state', '=', 'pending'), '|', ('steg_division_id.manager_id', '=', uid), ('steg_division_id.deputy_manager_id', '=', uid)]"/>
+                    
+                    <separator/>
+                    <filter string="Priorité Élevée" name="high_priority" 
+                            domain="[('steg_priority', 'in', ['high', 'urgent'])]"/>
+                    <filter string="Maintenance" name="maintenance" 
+                            domain="[('steg_request_type', '=', 'maintenance')]"/>
+                    <filter string="Urgence" name="emergency" 
+                            domain="[('steg_request_type', '=', 'emergency')]"/>
+                </filter>
+                
+                <group expand="0" string="Group By" position="inside">
+                    <filter string="Division STEG" name="group_steg_division" 
+                            context="{'group_by': 'steg_division_id'}"/>
+                    <filter string="Type de Demande" name="group_request_type" 
+                            context="{'group_by': 'steg_request_type'}"/>
+                    <filter string="Priorité" name="group_priority" 
+                            context="{'group_by': 'steg_priority'}"/>
+                    <filter string="État Approbation" name="group_approval_state" 
+                            context="{'group_by': 'steg_approval_state'}"/>
+                    <filter string="Demandeur" name="group_requester" 
+                            context="{'group_by': 'steg_requester_id'}"/>
+                </group>
+            </field>
+        </record>
+
+        <!-- Vue Kanban pour les demandes d'approbation -->
+        <record id="stock_picking_kanban_view_steg_approval" model="ir.ui.view">
+            <field name="name">stock.picking.kanban.steg.approval</field>
+            <field name="model">stock.picking</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="steg_approval_state" class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="steg_division_id"/>
+                    <field name="steg_requester_id"/>
+                    <field name="steg_priority"/>
+                    <field name="steg_approval_state"/>
+                    <field name="date"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click"
+                                 t-attf-class="#{record.steg_priority.raw_value == 'urgent' ? 'border-danger' : record.steg_priority.raw_value == 'high' ? 'border-warning' : ''}">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong><field name="name"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <field name="steg_division_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <div class="o_kanban_card_manage_pane">
+                                        <div class="o_kanban_card_manage_section">
+                                            <div>
+                                                Demandeur: <field name="steg_requester_id"/>
+                                            </div>
+                                            <div>
+                                                Date: <field name="date"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_footer">
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left">
+                                            <field name="steg_priority" widget="priority"/>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <button name="action_steg_approve" type="object" 
+                                                    class="btn btn-primary btn-sm"
+                                                    t-if="record.steg_approval_state.raw_value == 'pending'">
+                                                Approuver
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action pour les Demandes STEG -->
+        <record id="stock_picking_action_steg_requests" model="ir.actions.act_window">
+            <field name="name">Demandes STEG</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="domain">[('steg_division_id', '!=', False)]</field>
+            <field name="context">{
+                'default_steg_requester_id': uid,
+                'search_default_my_requests': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle demande STEG
+                </p>
+                <p>
+                    Créez vos demandes de pièces de rechange avec 
+                    workflow d'approbation par division.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action pour les Approbations STEG -->
+        <record id="stock_picking_action_steg_approvals" model="ir.actions.act_window">
+            <field name="name">Approbations STEG</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_id" ref="stock_picking_kanban_view_steg_approval"/>
+            <field name="domain">[('steg_approval_required', '=', True)]</field>
+            <field name="context">{
+                'search_default_to_approve': 1,
+                'search_default_pending_approval': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucune demande en attente d'approbation
+                </p>
+                <p>
+                    Les demandes nécessitant votre approbation apparaîtront ici.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Stock Move STEG -->
+        <record id="stock_move_form_view_steg" model="ir.ui.view">
+            <field name="name">stock.move.form.steg</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="steg_division_id" readonly="1"/>
+                    <field name="steg_criticality" readonly="1" 
+                           widget="badge"
+                           decoration-success="steg_criticality == 'low'"
+                           decoration-warning="steg_criticality == 'medium'"
+                           decoration-danger="steg_criticality in ('high', 'critical')"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

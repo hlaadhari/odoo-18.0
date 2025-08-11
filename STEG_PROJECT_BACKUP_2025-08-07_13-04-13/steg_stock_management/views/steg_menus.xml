@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Menu Principal STEG -->
+        <menuitem id="menu_steg_root" 
+                  name="STEG Stock" 
+                  sequence="5"
+                  web_icon="steg_stock_management,static/description/icon.png"/>
+
+        <!-- Sous-menu Tableau de Bord -->
+        <menuitem id="menu_steg_dashboard" 
+                  name="Tableau de Bord" 
+                  parent="menu_steg_root" 
+                  sequence="10"/>
+
+        <!-- Sous-menu Gestion des Stocks -->
+        <menuitem id="menu_steg_stock" 
+                  name="Gestion des Stocks" 
+                  parent="menu_steg_root" 
+                  sequence="20"/>
+
+        <!-- Sous-menu Demandes -->
+        <menuitem id="menu_steg_requests" 
+                  name="Demandes" 
+                  parent="menu_steg_root" 
+                  sequence="30"/>
+
+        <!-- Sous-menu Configuration -->
+        <menuitem id="menu_steg_config" 
+                  name="Configuration" 
+                  parent="menu_steg_root" 
+                  sequence="90"
+                  groups="steg_stock_management.group_steg_admin"/>
+
+        <!-- === TABLEAU DE BORD === -->
+        
+        <!-- Alertes Stock -->
+        <menuitem id="menu_steg_stock_alerts" 
+                  name="Alertes Stock" 
+                  parent="menu_steg_dashboard" 
+                  action="product_template_action_steg_alerts" 
+                  sequence="10"/>
+
+        <!-- Stock par Division -->
+        <menuitem id="menu_steg_stock_by_division" 
+                  name="Stock par Division" 
+                  parent="menu_steg_dashboard" 
+                  action="stock_quant_action_steg_by_division" 
+                  sequence="20"/>
+
+        <!-- === GESTION DES STOCKS === -->
+        
+        <!-- Produits STEG -->
+        <menuitem id="menu_steg_products" 
+                  name="Produits STEG" 
+                  parent="menu_steg_stock" 
+                  action="product_template_action_steg" 
+                  sequence="10"/>
+
+        <!-- Emplacements STEG -->
+        <menuitem id="menu_steg_locations" 
+                  name="Emplacements" 
+                  parent="menu_steg_stock" 
+                  action="stock_location_action_steg" 
+                  sequence="20"/>
+
+        <!-- Inventaire -->
+        <menuitem id="menu_steg_inventory" 
+                  name="Inventaire" 
+                  parent="menu_steg_stock" 
+                  action="stock.action_inventory_form" 
+                  sequence="30"/>
+
+        <!-- === DEMANDES === -->
+        
+        <!-- Mes Demandes -->
+        <menuitem id="menu_steg_my_requests" 
+                  name="Mes Demandes" 
+                  parent="menu_steg_requests" 
+                  action="stock_picking_action_steg_requests" 
+                  sequence="10"/>
+
+        <!-- Approbations -->
+        <menuitem id="menu_steg_approvals" 
+                  name="Approbations" 
+                  parent="menu_steg_requests" 
+                  action="stock_picking_action_steg_approvals" 
+                  sequence="20"
+                  groups="steg_stock_management.group_steg_division_chief"/>
+
+        <!-- Toutes les Demandes -->
+        <menuitem id="menu_steg_all_requests" 
+                  name="Toutes les Demandes" 
+                  parent="menu_steg_requests" 
+                  action="stock.action_picking_tree_all" 
+                  sequence="30"
+                  groups="steg_stock_management.group_steg_division_manager"/>
+
+        <!-- === CONFIGURATION === -->
+        
+        <!-- Divisions STEG -->
+        <menuitem id="menu_steg_divisions" 
+                  name="Divisions STEG" 
+                  parent="menu_steg_config" 
+                  action="steg_division_action" 
+                  sequence="10"/>
+
+        <!-- Catégories de Produits -->
+        <menuitem id="menu_steg_product_categories" 
+                  name="Catégories de Produits" 
+                  parent="menu_steg_config" 
+                  action="product.product_category_action_form" 
+                  sequence="20"/>
+
+        <!-- Types d'Opérations -->
+        <menuitem id="menu_steg_picking_types" 
+                  name="Types d'Opérations" 
+                  parent="menu_steg_config" 
+                  action="stock.action_picking_type_form" 
+                  sequence="30"/>
+
+        <!-- Utilisateurs -->
+        <menuitem id="menu_steg_users" 
+                  name="Utilisateurs" 
+                  parent="menu_steg_config" 
+                  action="base.action_res_users" 
+                  sequence="40"/>
+
+        <!-- === RAPPORTS === -->
+        
+        <!-- Sous-menu Rapports -->
+        <menuitem id="menu_steg_reports" 
+                  name="Rapports" 
+                  parent="menu_steg_root" 
+                  sequence="80"/>
+
+        <!-- Rapport Valorisation Stock -->
+        <menuitem id="menu_steg_stock_valuation" 
+                  name="Valorisation Stock" 
+                  parent="menu_steg_reports" 
+                  action="stock.action_stock_valuation_layer" 
+                  sequence="10"/>
+
+        <!-- Rapport Mouvements Stock -->
+        <menuitem id="menu_steg_stock_moves_report" 
+                  name="Mouvements de Stock" 
+                  parent="menu_steg_reports" 
+                  action="stock.stock_move_action" 
+                  sequence="20"/>
+
+        <!-- Analyse des Stocks -->
+        <menuitem id="menu_steg_stock_analysis" 
+                  name="Analyse des Stocks" 
+                  parent="menu_steg_reports" 
+                  action="stock.action_stock_quant_tree" 
+                  sequence="30"/>
+
+    </data>
+</odoo>

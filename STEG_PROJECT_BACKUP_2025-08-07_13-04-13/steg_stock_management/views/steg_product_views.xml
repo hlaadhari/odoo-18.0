@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue Formulaire Produit STEG -->
+        <record id="product_template_form_view_steg" model="ir.ui.view">
+            <field name="name">product.template.form.steg</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                
+                <!-- Ajouter bouton pour voir le stock STEG -->
+                <div name="button_box" position="inside">
+                    <button name="action_view_steg_stock" type="object" 
+                            class="oe_stat_button" icon="fa-cubes"
+                            attrs="{'invisible': [('steg_current_stock', '=', 0)]}">
+                        <field name="steg_current_stock" widget="statinfo" 
+                               string="Stock STEG"/>
+                    </button>
+                    <button name="action_generate_barcode" type="object" 
+                            class="oe_stat_button" icon="fa-barcode"
+                            string="Générer Code-barres"
+                            attrs="{'invisible': [('steg_barcode_auto', '=', False)]}"/>
+                </div>
+
+                <!-- Ajouter onglet STEG -->
+                <notebook position="inside">
+                    <page string="STEG" name="steg_info">
+                        <group>
+                            <group name="steg_basic">
+                                <field name="steg_division_id" required="1"/>
+                                <field name="steg_part_number"/>
+                                <field name="steg_category"/>
+                                <field name="steg_criticality"/>
+                            </group>
+                            <group name="steg_stock">
+                                <field name="steg_current_stock" readonly="1"/>
+                                <field name="steg_stock_status" readonly="1" 
+                                       widget="badge" 
+                                       decoration-success="steg_stock_status == 'ok'"
+                                       decoration-warning="steg_stock_status == 'low'"
+                                       decoration-danger="steg_stock_status == 'out'"
+                                       decoration-info="steg_stock_status == 'excess'"/>
+                                <field name="steg_min_stock"/>
+                                <field name="steg_max_stock"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Code-barres">
+                            <group>
+                                <field name="steg_barcode_auto"/>
+                                <field name="barcode" attrs="{'readonly': [('steg_barcode_auto', '=', True)]}"/>
+                            </group>
+                            <group>
+                                <field name="steg_barcode_image" widget="image" 
+                                       attrs="{'invisible': [('steg_barcode_image', '=', False)]}"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Informations Techniques">
+                            <group>
+                                <field name="steg_manufacturer"/>
+                                <field name="steg_model"/>
+                                <field name="steg_installation_date"/>
+                                <field name="steg_warranty_months"/>
+                            </group>
+                            <group>
+                                <field name="steg_specifications" colspan="2"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Emplacements Autorisés">
+                            <field name="steg_location_ids" nolabel="1">
+                                <tree>
+                                    <field name="complete_name"/>
+                                    <field name="steg_division_id"/>
+                                    <field name="steg_location_type"/>
+                                    <field name="steg_access_level"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </notebook>
+
+                <!-- Modifier les champs existants -->
+                <field name="categ_id" position="after">
+                    <field name="steg_division_id" 
+                           attrs="{'required': [('type', '=', 'product')]}"/>
+                </field>
+
+            </field>
+        </record>
+
+        <!-- Vue Liste Produit STEG -->
+        <record id="product_template_tree_view_steg" model="ir.ui.view">
+            <field name="name">product.template.tree.steg</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after">
+                    <field name="steg_division_id" optional="show"/>
+                    <field name="steg_part_number" optional="show"/>
+                    <field name="steg_category" optional="hide"/>
+                    <field name="steg_criticality" optional="show" 
+                           widget="badge"
+                           decoration-success="steg_criticality == 'low'"
+                           decoration-warning="steg_criticality == 'medium'"
+                           decoration-danger="steg_criticality in ('high', 'critical')"/>
+                    <field name="steg_current_stock" optional="show"/>
+                    <field name="steg_stock_status" optional="show" 
+                           widget="badge"
+                           decoration-success="steg_stock_status == 'ok'"
+                           decoration-warning="steg_stock_status == 'low'"
+                           decoration-danger="steg_stock_status == 'out'"
+                           decoration-info="steg_stock_status == 'excess'"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Produit STEG -->
+        <record id="product_template_search_view_steg" model="ir.ui.view">
+            <field name="name">product.template.search.steg</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after">
+                    <field name="steg_division_id"/>
+                    <field name="steg_part_number"/>
+                    <field name="steg_manufacturer"/>
+                </field>
+                
+                <filter name="filter_to_sell" position="after">
+                    <separator/>
+                    <filter string="Division Télécom" name="division_telecom" 
+                            domain="[('steg_division_id.code', '=', 'TEL')]"/>
+                    <filter string="Division Téléconduite" name="division_teleconduite" 
+                            domain="[('steg_division_id.code', '=', 'TCD')]"/>
+                    <filter string="Division SCADA" name="division_scada" 
+                            domain="[('steg_division_id.code', '=', 'SCA')]"/>
+                    <filter string="Pièces Communes" name="division_commune" 
+                            domain="[('steg_division_id.code', '=', 'COM')]"/>
+                    
+                    <separator/>
+                    <filter string="Stock Faible" name="stock_low" 
+                            domain="[('steg_stock_status', '=', 'low')]"/>
+                    <filter string="Rupture de Stock" name="stock_out" 
+                            domain="[('steg_stock_status', '=', 'out')]"/>
+                    <filter string="Criticité Élevée" name="high_criticality" 
+                            domain="[('steg_criticality', 'in', ['high', 'critical'])]"/>
+                </filter>
+                
+                <group expand="0" string="Group By" position="inside">
+                    <filter string="Division STEG" name="group_steg_division" 
+                            context="{'group_by': 'steg_division_id'}"/>
+                    <filter string="Catégorie STEG" name="group_steg_category" 
+                            context="{'group_by': 'steg_category'}"/>
+                    <filter string="Criticité" name="group_criticality" 
+                            context="{'group_by': 'steg_criticality'}"/>
+                    <filter string="Statut Stock" name="group_stock_status" 
+                            context="{'group_by': 'steg_stock_status'}"/>
+                </group>
+            </field>
+        </record>
+
+        <!-- Action pour les Produits STEG -->
+        <record id="product_template_action_steg" model="ir.actions.act_window">
+            <field name="name">Produits STEG</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="domain">[('steg_division_id', '!=', False)]</field>
+            <field name="context">{
+                'search_default_consumable': 1,
+                'default_type': 'product',
+                'default_steg_barcode_auto': True
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer un nouveau produit STEG
+                </p>
+                <p>
+                    Gérez vos pièces de rechange et équipements STEG avec 
+                    un suivi par division et des codes-barres automatiques.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vue Kanban spéciale pour les alertes stock -->
+        <record id="product_template_kanban_view_steg_alerts" model="ir.ui.view">
+            <field name="name">product.template.kanban.steg.alerts</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1">
+                    <field name="name"/>
+                    <field name="steg_division_id"/>
+                    <field name="steg_current_stock"/>
+                    <field name="steg_min_stock"/>
+                    <field name="steg_stock_status"/>
+                    <field name="steg_criticality"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click"
+                                 t-attf-class="#{record.steg_stock_status.raw_value == 'out' ? 'border-danger' : record.steg_stock_status.raw_value == 'low' ? 'border-warning' : ''}">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong><field name="name"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <field name="steg_division_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <div class="o_kanban_card_manage_pane">
+                                        <div class="o_kanban_card_manage_section">
+                                            <div>
+                                                Stock: <field name="steg_current_stock"/> / <field name="steg_min_stock"/>
+                                            </div>
+                                            <div>
+                                                <field name="steg_stock_status" widget="badge"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_footer">
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left">
+                                            <field name="steg_criticality" widget="priority"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action pour les Alertes Stock -->
+        <record id="product_template_action_steg_alerts" model="ir.actions.act_window">
+            <field name="name">Alertes Stock STEG</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_id" ref="product_template_kanban_view_steg_alerts"/>
+            <field name="domain">[('steg_stock_status', 'in', ['low', 'out'])]</field>
+            <field name="context">{'search_default_high_criticality': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucune alerte stock actuellement
+                </p>
+                <p>
+                    Les produits en rupture ou avec un stock faible apparaîtront ici.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

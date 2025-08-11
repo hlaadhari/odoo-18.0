@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue Générateur de Codes-barres -->
+        <record id="barcode_generator_form_view" model="ir.ui.view">
+            <field name="name">steg.barcode.generator.form</field>
+            <field name="model">steg.barcode.generator</field>
+            <field name="arch" type="xml">
+                <form string="Générateur de Codes-barres STEG">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Générateur de Codes-barres STEG</h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="prefix"/>
+                                <field name="format_type"/>
+                            </group>
+                        </group>
+                        <group string="Produits">
+                            <field name="product_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="default_code"/>
+                                    <field name="steg_division_id"/>
+                                    <field name="barcode"/>
+                                </list>
+                            </field>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="generate_barcodes" type="object" 
+                                string="Générer Codes-barres" class="oe_highlight"/>
+                        <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Scanner de Codes-barres -->
+        <record id="barcode_scanner_form_view" model="ir.ui.view">
+            <field name="name">steg.barcode.scanner.form</field>
+            <field name="model">steg.barcode.scanner</field>
+            <field name="arch" type="xml">
+                <form string="Scanner Code-barres STEG">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Scanner Code-barres</h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="barcode_input" placeholder="Scannez ou saisissez le code-barres"/>
+                                <field name="location_id"/>
+                            </group>
+                            <group>
+                                <field name="product_id" readonly="1"/>
+                                <field name="current_qty" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_view_product" type="object" 
+                                string="Voir Produit" class="oe_highlight"
+                                attrs="{'invisible': [('product_id', '=', False)]}"/>
+                        <button name="action_view_stock" type="object" 
+                                string="Voir Stock"
+                                attrs="{'invisible': [('product_id', '=', False)]}"/>
+                        <button string="Fermer" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Générateur -->
+        <record id="barcode_generator_action" model="ir.actions.act_window">
+            <field name="name">Générateur Codes-barres</field>
+            <field name="res_model">steg.barcode.generator</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Action Scanner -->
+        <record id="barcode_scanner_action" model="ir.actions.act_window">
+            <field name="name">Scanner Code-barres</field>
+            <field name="res_model">steg.barcode.scanner</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Boutons dans les vues produits -->
+        <record id="product_template_form_view_barcode" model="ir.ui.view">
+            <field name="name">product.template.form.barcode</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <button name="action_generate_steg_barcode" type="object" 
+                            class="oe_stat_button" icon="fa-barcode"
+                            string="Générer Code-barres"
+                            attrs="{'invisible': [('barcode', '!=', False)]}"/>
+                    <button name="action_print_barcode_label" type="object" 
+                            class="oe_stat_button" icon="fa-print"
+                            string="Imprimer Étiquette"
+                            attrs="{'invisible': [('barcode', '=', False)]}"/>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

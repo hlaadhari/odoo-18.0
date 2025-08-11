@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_steg_division_user,steg.division.user,model_steg_division,group_steg_user,1,0,0,0
+access_steg_division_manager,steg.division.manager,model_steg_division,group_steg_division_manager,1,1,0,0
+access_steg_division_chief,steg.division.chief,model_steg_division,group_steg_division_chief,1,1,1,0
+access_steg_division_admin,steg.division.admin,model_steg_division,group_steg_admin,1,1,1,1
+access_steg_division_all,steg.division.all,model_steg_division,,1,0,0,0

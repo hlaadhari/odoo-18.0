@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15
+    container_name: odoo_steg_db_simple
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data-simple:/var/lib/postgresql/data/pgdata
+      - ./database/init:/docker-entrypoint-initdb.d
+      - ./database/backups:/backups
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    image: odoo:18.0
+    container_name: odoo_steg_app_simple
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - odoo-web-data-simple:/var/lib/odoo
+      - ./custom_addons:/mnt/extra-addons
+    restart: unless-stopped
+
+volumes:
+  odoo-web-data-simple:
+  odoo-db-data-simple:

@@ -8,39 +8,46 @@ param(
     [string]$Action = $null
 )
 # Configuration
-$ADDON_REPO_URL = "https://github.com/hlaadhari/steg_stock_management.git" # À adapter si besoin
-$ADDON_PATH = ".\custom_addons\steg_stock_management"
+# Dossier source local pour la mise à jour de tous les addons
+$LOCAL_UPDATE_SOURCE_DIR = ".\addon_update_source"
+$CUSTOM_ADDONS_DIR = ".\custom_addons"
 function Update-STEGAddon {
     Show-Header
-    Write-ColorText "🔄 MISE À JOUR DE L'ADDON STEG" "Blue"
+    Write-ColorText "🔄 MISE À JOUR DE TOUS LES ADDONS (copie locale)" "Blue"
 
     if (-not (Test-ServicesRunning)) {
         Write-ColorText "❌ Services non démarrés. Utilisez: .\steg-manager.ps1 start" "Red"
         return
     }
 
-    # Sauvegarde de l'ancien dossier
-    $backupDir = ".\custom_addons\backup_steg_stock_management_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
-    if (Test-Path $ADDON_PATH) {
-        Write-ColorText "📦 Sauvegarde de l'ancienne version..." "Yellow"
-        Copy-Item $ADDON_PATH $backupDir -Recurse -Force
-    }
-
-    # Suppression de l'ancien dossier
-    Remove-Item $ADDON_PATH -Recurse -Force -ErrorAction SilentlyContinue
-
-    # Clonage du dépôt
-    Write-ColorText "🌐 Téléchargement de la dernière version depuis le dépôt..." "Blue"
-    git clone $ADDON_REPO_URL $ADDON_PATH
-    if (-not (Test-Path $ADDON_PATH)) {
-        Write-ColorText "❌ Échec du téléchargement de l'addon." "Red"
+    if (-not (Test-Path $LOCAL_UPDATE_SOURCE_DIR)) {
+        Write-ColorText "❌ Dossier source local introuvable : $LOCAL_UPDATE_SOURCE_DIR" "Red"
         return
     }
 
-    Write-ColorText "🔄 Redémarrage du serveur Odoo..." "Blue"
+    $addons = Get-ChildItem -Path $LOCAL_UPDATE_SOURCE_DIR -Directory
+    if ($addons.Count -eq 0) {
+        Write-ColorText "❌ Aucun addon trouvé dans $LOCAL_UPDATE_SOURCE_DIR" "Red"
+        return
+    }
+
+    foreach ($addon in $addons) {
+        $src = Join-Path $LOCAL_UPDATE_SOURCE_DIR $addon.Name
+        $dst = Join-Path $CUSTOM_ADDONS_DIR $addon.Name
+        Write-ColorText "📂 Mise à jour de l'addon $($addon.Name) ..." "Blue"
+        Remove-Item $dst -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item $src $dst -Recurse -Force
+        if (-not (Test-Path $dst)) {
+            Write-ColorText "❌ Échec de la copie de $($addon.Name)." "Red"
+        } else {
+            Write-ColorText "✅ $($addon.Name) mis à jour." "Green"
+        }
+    }
+
+    Write-ColorText "🔄 Redémarrage du service Odoo uniquement..." "Blue"
     docker-compose -f $COMPOSE_FILE restart odoo
     Start-Sleep -Seconds 20
-    Write-ColorText "✅ Addon mis à jour et serveur redémarré !" "Green"
+    Write-ColorText "✅ Tous les addons sont à jour et Odoo redémarré !" "Green"
 }
 
 # Configuration

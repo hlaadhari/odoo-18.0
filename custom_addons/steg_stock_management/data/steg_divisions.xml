@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="steg_division_telecom" model="steg.division">
+            <field name="name">Division Télécom</field>
+            <field name="code">TELECOM</field>
+        </record>
+        <record id="steg_division_teleconduite" model="steg.division">
+            <field name="name">Division Téléconduite</field>
+            <field name="code">TELECONDUITE</field>
+        </record>
+        <record id="steg_division_scada" model="steg.division">
+            <field name="name">Division SCADA</field>
+            <field name="code">SCADA</field>
+        </record>
+        <record id="steg_division_communs" model="steg.division">
+            <field name="name">Pièces communes</field>
+            <field name="code">COMMUNS</field>
+        </record>
+    </data>
+</odoo>
+
+

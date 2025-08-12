@@ -15,6 +15,7 @@
     ],
     "data": [
         "security/ir.model.access.csv",
+        "data/steg_divisions.xml",
         "views/steg_division_views.xml",
     ],
     "installable": True,

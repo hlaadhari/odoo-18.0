@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_steg_product_tree" model="ir.ui.view">
+        <field name="name">steg.product.tree</field>
+        <field name="model">steg.product</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="default_code"/>
+                <field name="division_id"/>
+                <field name="qty_on_hand"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_steg_product_form" model="ir.ui.view">
+        <field name="name">steg.product.form</field>
+        <field name="model">steg.product</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="default_code"/>
+                        <field name="division_id"/>
+                        <field name="product_id"/>
+                        <field name="qty_on_hand"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_steg_product" model="ir.actions.act_window">
+        <field name="name">Pièces STEG</field>
+        <field name="res_model">steg.product</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_steg_products" name="Pièces" parent="menu_steg_root" action="action_steg_product" sequence="20"/>
+</odoo>
+
+

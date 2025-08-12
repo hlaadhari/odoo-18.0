@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_steg_division_user,access.steg.division.user,model_steg_division,base.group_user,1,1,1,1
+access_steg_product_user,access.steg.product.user,model_steg_product,base.group_user,1,1,1,1
+access_steg_stock_move_user,access.steg.stock.move.user,model_steg_stock_move,base.group_user,1,1,1,1
 
 

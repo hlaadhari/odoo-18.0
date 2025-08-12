@@ -1,0 +1,24 @@
+{
+    "name": "STEG Stock Management",
+    "summary": "Gestion des stocks multi-divisions (STEG)",
+    "version": "18.0.1.0.0",
+    "category": "Inventory/Inventory",
+    "author": "STEG",
+    "website": "https://steg.tn",
+    "license": "LGPL-3",
+    "depends": [
+        "stock",
+        "barcodes",
+        "contacts",
+        "purchase",
+        "sale",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/steg_division_views.xml",
+    ],
+    "installable": True,
+    "application": True,
+}
+
+

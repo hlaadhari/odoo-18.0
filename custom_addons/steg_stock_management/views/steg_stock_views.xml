@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_steg_stock_move_tree" model="ir.ui.view">
-        <field name="name">steg.stock.move.tree</field>
+        <field name="name">steg.stock.move.list</field>
         <field name="model">steg.stock.move</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="date"/>
                 <field name="move_type"/>
                 <field name="product_id"/>
                 <field name="quantity"/>
                 <field name="division_id"/>
                 <field name="user_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="view_steg_stock_move_form" model="ir.ui.view">
         <field name="name">steg.stock.move.form</field>
         <field name="model">steg.stock.move</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -38,7 +40,7 @@
     <record id="action_steg_stock_move" model="ir.actions.act_window">
         <field name="name">Mouvements STEG</field>
         <field name="res_model">steg.stock.move</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_steg_stock" name="Mouvements" parent="menu_steg_root" action="action_steg_stock_move" sequence="30"/>

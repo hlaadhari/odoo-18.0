@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_steg_division_tree" model="ir.ui.view">
-        <field name="name">steg.division.tree</field>
+        <field name="name">steg.division.list</field>
         <field name="model">steg.division</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="code"/>
                 <field name="warehouse_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="view_steg_division_form" model="ir.ui.view">
         <field name="name">steg.division.form</field>
         <field name="model">steg.division</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -24,6 +26,11 @@
                         <field name="warehouse_id"/>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -31,11 +38,12 @@
     <record id="action_steg_division" model="ir.actions.act_window">
         <field name="name">Divisions STEG</field>
         <field name="res_model">steg.division</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_steg_root" name="STEG" sequence="10"/>
     <menuitem id="menu_steg_division" name="Divisions" parent="menu_steg_root" action="action_steg_division" sequence="10"/>
 </odoo>
+
 
 

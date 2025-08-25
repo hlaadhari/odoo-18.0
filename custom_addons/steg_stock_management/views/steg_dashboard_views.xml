@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue du tableau de bord STEG -->
+    <record id="view_steg_dashboard_form" model="ir.ui.view">
+        <field name="name">steg.dashboard.form</field>
+        <field name="model">steg.dashboard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de bord STEG" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_new_move_in" type="object" string="Nouvelle Entrée" class="btn-primary"/>
+                    <button name="action_new_move_out" type="object" string="Nouvelle Sortie" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>🏢 Système de Gestion des Stocks STEG</h1>
+                        <h3>Tableau de bord - Société Tunisienne de l'Électricité et du Gaz</h3>
+                    </div>
+                    
+                    <!-- Statistiques principales -->
+                    <group string="📊 Statistiques">
+                        <group>
+                            <field name="total_products" string="Total Pièces"/>
+                            <field name="total_moves_today" string="Mouvements Aujourd'hui"/>
+                        </group>
+                        <group>
+                            <field name="pending_validations" string="En Attente Validation"/>
+                            <field name="total_divisions" string="Divisions Actives"/>
+                        </group>
+                    </group>
+
+                    <!-- Alertes -->
+                    <group string="⚠️ Alertes Stock">
+                        <group>
+                            <field name="low_stock_count" string="Stock Bas"/>
+                            <field name="out_of_stock_count" string="Ruptures"/>
+                        </group>
+                        <group>
+                            <button name="action_view_low_stock" type="object" string="Voir Stock Bas" class="btn-warning"/>
+                            <button name="action_view_out_of_stock" type="object" string="Voir Ruptures" class="btn-danger"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Répartition par division -->
+                    <group string="🏢 Répartition par Division">
+                        <group>
+                            <field name="telecom_products" string="Télécom"/>
+                            <field name="teleconduite_products" string="Téléconduite"/>
+                        </group>
+                        <group>
+                            <field name="scada_products" string="SCADA"/>
+                            <field name="common_products" string="Communes"/>
+                        </group>
+                    </group>
+
+                    <!-- Actions rapides -->
+                    <group string="⚡ Actions Rapides">
+                        <group>
+                            <button name="action_new_move_in" type="object" string="➕ Nouvelle Entrée" class="btn-success"/>
+                            <button name="action_view_products" type="object" string="📦 Gérer Pièces" class="btn-primary"/>
+                        </group>
+                        <group>
+                            <button name="action_new_move_out" type="object" string="➖ Nouvelle Sortie" class="btn-danger"/>
+                            <button name="action_view_moves" type="object" string="📋 Historique" class="btn-info"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action pour le tableau de bord -->
+    <record id="action_steg_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord STEG</field>
+        <field name="res_model">steg.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'form_view_initial_mode': 'readonly', 'default_id': 1}</field>
+        <field name="res_id">1</field>
+    </record>
+
+    <!-- Menu principal STEG (remplace l'ancien) -->
+    <record id="menu_steg_main" model="ir.ui.menu">
+        <field name="name">STEG Stock</field>
+        <field name="sequence">5</field>
+        <field name="action" ref="action_steg_dashboard"/>
+        <field name="web_icon">steg_stock_management,static/description/icon.png</field>
+    </record>
+
+    <!-- Sous-menus -->
+    <menuitem id="menu_steg_operations" name="Opérations" parent="menu_steg_main" sequence="10"/>
+    <menuitem id="menu_steg_config" name="Configuration" parent="menu_steg_main" sequence="20"/>
+    
+    <!-- Menus opérations -->
+    <menuitem id="menu_steg_moves" name="Mouvements" parent="menu_steg_operations" action="action_steg_stock_move" sequence="10"/>
+    <menuitem id="menu_steg_products_menu" name="Pièces" parent="menu_steg_operations" action="action_steg_product" sequence="20"/>
+    
+    <!-- Menus configuration -->
+    <menuitem id="menu_steg_divisions_menu" name="Divisions" parent="menu_steg_config" action="action_steg_division" sequence="10"/>
+</odoo>

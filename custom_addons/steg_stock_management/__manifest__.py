@@ -16,6 +16,7 @@
     "data": [
         "security/ir.model.access.csv",
         "data/steg_divisions.xml",
+        "views/steg_dashboard_views.xml",
         "views/steg_division_views.xml",
         "views/steg_product_views.xml",
         "views/steg_stock_views.xml",

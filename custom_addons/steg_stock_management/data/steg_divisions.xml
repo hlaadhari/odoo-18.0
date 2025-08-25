@@ -1,21 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <!-- Séquence pour les mouvements de stock -->
+        <record id="seq_steg_stock_move" model="ir.sequence">
+            <field name="name">Mouvement Stock STEG</field>
+            <field name="code">steg.stock.move</field>
+            <field name="prefix">STEG/MOV/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Divisions STEG par défaut -->
         <record id="steg_division_telecom" model="steg.division">
             <field name="name">Division Télécom</field>
             <field name="code">TELECOM</field>
+            <field name="description">Division responsable des équipements de télécommunications</field>
         </record>
         <record id="steg_division_teleconduite" model="steg.division">
             <field name="name">Division Téléconduite</field>
             <field name="code">TELECONDUITE</field>
+            <field name="description">Division responsable des systèmes de téléconduite</field>
         </record>
         <record id="steg_division_scada" model="steg.division">
             <field name="name">Division SCADA</field>
             <field name="code">SCADA</field>
+            <field name="description">Division responsable des systèmes SCADA (Supervisory Control and Data Acquisition)</field>
         </record>
         <record id="steg_division_communs" model="steg.division">
-            <field name="name">Pièces communes</field>
+            <field name="name">Pièces Communes</field>
             <field name="code">COMMUNS</field>
+            <field name="description">Pièces communes utilisées par toutes les divisions</field>
+        </record>
+
+        <!-- Groupes de sécurité STEG -->
+        <record id="group_steg_user" model="res.groups">
+            <field name="name">STEG: Utilisateur</field>
+            <field name="category_id" ref="base.module_category_inventory"/>
+            <field name="comment">Peut consulter les stocks et créer des demandes de mouvement</field>
+        </record>
+
+        <record id="group_steg_division_manager" model="res.groups">
+            <field name="name">STEG: Chef de Division</field>
+            <field name="category_id" ref="base.module_category_inventory"/>
+            <field name="implied_ids" eval="[(4, ref('group_steg_user'))]"/>
+            <field name="comment">Peut valider les mouvements de sa division</field>
+        </record>
+
+        <record id="group_steg_department_manager" model="res.groups">
+            <field name="name">STEG: Chef de Département</field>
+            <field name="category_id" ref="base.module_category_inventory"/>
+            <field name="implied_ids" eval="[(4, ref('group_steg_division_manager'))]"/>
+            <field name="comment">Peut valider les mouvements de toutes les divisions</field>
+        </record>
+
+        <record id="group_steg_admin" model="res.groups">
+            <field name="name">STEG: Administrateur</field>
+            <field name="category_id" ref="base.module_category_inventory"/>
+            <field name="implied_ids" eval="[(4, ref('group_steg_department_manager'))]"/>
+            <field name="comment">Accès complet au système STEG</field>
+        </record>
+
+        <!-- Exemples de pièces -->
+        <record id="product_cable_ethernet" model="steg.product">
+            <field name="name">Câble Ethernet Cat6</field>
+            <field name="default_code">CAB-ETH-CAT6</field>
+            <field name="division_id" ref="steg_division_communs"/>
+            <field name="description">Câble Ethernet catégorie 6 pour réseaux</field>
+            <field name="category">Câblage</field>
+            <field name="min_qty">10</field>
+            <field name="max_qty">100</field>
+            <field name="qty_on_hand">50</field>
+            <field name="unit_price">15.50</field>
+        </record>
+
+        <record id="product_switch_24p" model="steg.product">
+            <field name="name">Switch 24 ports Gigabit</field>
+            <field name="default_code">SW-24P-GIG</field>
+            <field name="division_id" ref="steg_division_telecom"/>
+            <field name="description">Commutateur réseau 24 ports Gigabit Ethernet</field>
+            <field name="category">Équipement réseau</field>
+            <field name="min_qty">2</field>
+            <field name="max_qty">10</field>
+            <field name="qty_on_hand">5</field>
+            <field name="unit_price">450.00</field>
+        </record>
+
+        <record id="product_plc_module" model="steg.product">
+            <field name="name">Module PLC Schneider</field>
+            <field name="default_code">PLC-SCH-M340</field>
+            <field name="division_id" ref="steg_division_scada"/>
+            <field name="description">Module automate programmable Schneider Modicon M340</field>
+            <field name="category">Automatisme</field>
+            <field name="min_qty">1</field>
+            <field name="max_qty">5</field>
+            <field name="qty_on_hand">3</field>
+            <field name="unit_price">1250.00</field>
+        </record>
+
+        <!-- Enregistrement dashboard par défaut -->
+        <record id="steg_dashboard_default" model="steg.dashboard">
+            <field name="id">1</field>
         </record>
     </data>
 </odoo>

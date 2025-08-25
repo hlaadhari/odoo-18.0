@@ -51,8 +51,8 @@ class BarcodeGenerator(models.TransientModel):
         
         elif self.format_type == 'division_based':
             division_code = 'GEN'  # Général par défaut
-            if product.steg_division_id:
-                division_code = product.steg_division_id.code or 'GEN'
+            if self.env.user.steg_division_id:
+                division_code = self.env.user.steg_division_id.code or 'GEN'
             return f"{self.prefix}{division_code}{product.id:06d}"
         
         elif self.format_type == 'random':
@@ -67,15 +67,15 @@ class ProductTemplate(models.Model):
 
     def action_generate_steg_barcode(self):
         """Action pour générer un code-barres STEG"""
+        self.ensure_one()
         if not self.barcode:
-            if self.steg_division_id:
-                division_code = self.steg_division_id.code or 'GEN'
-                barcode = f"STEG{division_code}{self.id:06d}"
-            else:
-                barcode = f"STEG{self.id:08d}"
-            
+            division_code = 'GEN'
+            if self.env.user.steg_division_id:
+                division_code = self.env.user.steg_division_id.code or 'GEN'
+            barcode = (
+                f"STEG{division_code}{self.id:06d}" if division_code != 'GEN' else f"STEG{self.id:08d}"
+            )
             self.barcode = barcode
-            
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',

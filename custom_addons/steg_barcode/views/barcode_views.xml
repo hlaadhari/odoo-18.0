@@ -20,12 +20,11 @@
                         </group>
                         <group string="Produits">
                             <field name="product_ids" nolabel="1">
-                                <list>
+                                <tree>
                                     <field name="name"/>
                                     <field name="default_code"/>
-                                    <field name="steg_division_id"/>
                                     <field name="barcode"/>
-                                </list>
+                                </tree>
                             </field>
                         </group>
                     </sheet>
@@ -106,6 +105,12 @@
                 </div>
             </field>
         </record>
+
+    <!-- Menus -->
+        <menuitem id="menu_steg_barcode_root" name="STEG Codes-barres" parent="stock.menu_stock_root" sequence="90"/>
+        <menuitem id="menu_steg_barcode_tools" name="Outils Codes-barres" parent="menu_steg_barcode_root" sequence="10"/>
+        <menuitem id="menu_steg_barcode_generator" name="Générateur" parent="menu_steg_barcode_tools" action="barcode_generator_action" sequence="10"/>
+        <menuitem id="menu_steg_barcode_scanner" name="Scanner" parent="menu_steg_barcode_tools" action="barcode_scanner_action" sequence="20"/>
 
     </data>
 </odoo>

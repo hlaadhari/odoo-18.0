@@ -25,13 +25,18 @@
         'steg_stock_management',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/barcode_views.xml',
+        'report/barcode_report.xml',
         'views/barcode_templates.xml',
     ],
     'assets': {
         'web.assets_backend': [
             'steg_barcode/static/src/js/barcode_scanner.js',
             'steg_barcode/static/src/css/barcode_scanner.css',
+        ],
+        'web.assets_qweb': [
+            'steg_barcode/views/barcode_templates.xml',
         ],
     },
     'images': ['static/description/icon.png'],

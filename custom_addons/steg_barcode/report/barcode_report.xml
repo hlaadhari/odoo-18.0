@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Rapport d'étiquette code-barres (placeholder) -->
+        <report
+            id="barcode_label_report"
+            string="Étiquette Code-barres"
+            model="product.template"
+            report_type="qweb-html"
+            name="steg_barcode.barcode_label_report"
+            file="steg_barcode.barcode_label_report"
+            print_report_name="(object.display_name + ' - Étiquette Code-barres')"
+        />
+
+        <template id="barcode_label_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <div style="padding:10px; margin:10px; border:1px solid #ccc; width:300px;">
+                        <h4 t-esc="o.display_name"/>
+                        <p>
+                            <span>Code-barres: </span>
+                            <span t-esc="o.barcode or '-'"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

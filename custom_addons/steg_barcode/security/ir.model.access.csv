@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_steg_barcode_generator_user,steg.barcode.generator,model_steg_barcode_generator,base.group_user,1,1,1,1
+access_steg_barcode_scanner_user,steg.barcode.scanner,model_steg_barcode_scanner,base.group_user,1,1,1,1

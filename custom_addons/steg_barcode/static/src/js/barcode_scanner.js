@@ -41,7 +41,7 @@ class BarcodeScanner extends Component {
                 method: 'search_read',
                 args: [[['barcode', '=', barcode]]],
                 kwargs: {
-                    fields: ['name', 'default_code', 'barcode', 'steg_division_id']
+                    fields: ['name', 'default_code', 'barcode']
                 }
             });
 
@@ -66,7 +66,6 @@ class BarcodeScanner extends Component {
                     <h4>${product.name}</h4>
                     <p>Code: ${product.default_code || 'N/A'}</p>
                     <p>Code-barres: ${product.barcode}</p>
-                    <p>Division: ${product.steg_division_id ? product.steg_division_id[1] : 'N/A'}</p>
                 </div>
             `;
         }

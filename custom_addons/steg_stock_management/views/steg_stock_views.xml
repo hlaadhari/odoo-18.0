@@ -16,7 +16,7 @@
                 <field name="division_id"/>
                 <field name="user_id" string="Demandeur"/>
                 <field name="validator_id"/>
-                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-warning="state == 'waiting'" decoration-info="state == 'validated'"/>
+                <field name="state" widget="badge"/>
             </list>
         </field>
     </record>
@@ -28,16 +28,16 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_submit_for_validation" type="object" string="Soumettre pour validation" 
-                            class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_validate" type="object" string="Valider" 
-                            class="btn-success" invisible="state != 'waiting'"/>
-                    <button name="action_execute" type="object" string="Exécuter" 
-                            class="btn-success" invisible="state != 'validated'"/>
-                    <button name="action_cancel" type="object" string="Annuler" 
-                            class="btn-secondary" invisible="state in ['done', 'cancelled']"/>
-                    <button name="action_reset_to_draft" type="object" string="Remettre en brouillon" 
-                            class="btn-secondary" invisible="state not in ['cancelled', 'waiting']"/>
+            <button name="action_submit_for_validation" type="object" string="Soumettre pour validation" 
+                class="btn-primary"/>
+            <button name="action_validate" type="object" string="Valider" 
+                class="btn-success"/>
+            <button name="action_execute" type="object" string="Exécuter" 
+                class="btn-success"/>
+            <button name="action_cancel" type="object" string="Annuler" 
+                class="btn-secondary"/>
+            <button name="action_reset_to_draft" type="object" string="Remettre en brouillon" 
+                class="btn-secondary"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,waiting,validated,done"/>
                 </header>
                 <sheet>
@@ -73,7 +73,7 @@
                         </group>
                     </group>
                     
-                    <group string="Informations complémentaires" invisible="move_type != 'in'">
+                    <group string="Informations complémentaires">
                         <group>
                             <field name="supplier_id"/>
                             <field name="purchase_order_ref"/>
@@ -85,11 +85,7 @@
                         <field name="reason" nolabel="1" placeholder="Motif du mouvement"/>
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>

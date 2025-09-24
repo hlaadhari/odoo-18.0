@@ -1,3 +1,107 @@
+# Plan de développement — STEG Stock Management
+
+Objectif
+--------
+Compléter et stabiliser le module `steg_stock_management` pour la gestion multi-divisionnelle des stocks, workflows d'approbation, intégration codes-barres, sécurité et déploiement simple dans un environnement Docker.
+
+Contexte rapide
+-----------------
+Le module contient déjà des modèles (mouvements, produit, division, utilisateurs), vues principales et quelques données. Le `readme.md` décrit les workflows métier attendus (entrée, sortie, transfert, inventaire) et les rôles (magasinier, chef division, chef département, admin).
+
+Approche et principes
+----------------------
+- Prioriser la stabilité (corriger les erreurs XML/compatibilité Odoo 17+).
+- Implémenter les workflows critiques (entrée/sortie/transfert/inventaire) avec tests unitaires.
+- Garder les vues mobiles simples et optimisées pour scan de codes-barres.
+- Fournir scripts légers pour déployer/mettre à jour un addon dans un conteneur Docker sans rebuild complet.
+
+Livrables attendus
+-------------------
+- Code (models, views, controllers si besoin)
+- Tests unitaires pour modèles + tests tours pour flows UI critiques
+- Script de déploiement/updating d'un addon vers container Docker
+- Documentation utilisateur et administrateur (README + CHANGELOG)
+
+Plan de travail (tâches détaillées)
+----------------------------------
+
+1) Stabilisation & compatibilité (Est: 1 jour)
+   - Objectif : Corriger les erreurs de parsing et rendre le module installable/upgrade sur Odoo 17+.
+   - Actions :
+     - Supprimer ou convertir les attributs obsolètes (`attrs`, `states`) (déjà effectué pour certaines vues).
+     - Linter rapide des XML (vérifier balises non fermées, duplications de boutons).
+   - Critères d'acceptation : Module s'installe/upgrade sans ParseError.
+
+2) Workflow de validation (Est: 3-4 jours)
+   - Objectif : Implémenter les actions et transitions d'état (soumettre, valider, exécuter, annuler), with proper ACL and logging.
+   - Actions :
+     - Ajouter un champ `state` si absent et méthodes Python pour transitions (contrôles permissions/conditions).
+     - Remplacer la logique d'affichage des boutons par des `attrs` dynamiques sur champs (ou gestion via `groups` + condition côté serveur) compatibles Odoo 17.
+     - Écrire tests unitaires pour transitions d'état (happy path + edge cases : double validation, validation sans droits).
+   - Critères d'acceptation : Transitions fonctionnelles, boutons visibles/masqués comme prévu, tests unitaires verts.
+
+3) Intégration Code-barres (Est: 2 jours)
+   - Objectif : Scanner et générer codes-barres, remplir automatiquement les produits, imprimer étiquettes.
+   - Actions :
+     - Vérifier `steg_barcode` (déjà présent) ; écrire glue code pour remplir les mouvements à partir du scan.
+     - Génération PDF d’étiquettes (A4) avec logo et informations demandées.
+     - Tests manuels sur mobile (scan caméra) et scénario automatisé si possible (tour).
+   - Critères d'acceptation : Scan auto-remplit produit + quantité proposée ; génération PDF ok.
+
+4) Permissions et sécurité (Est: 1 jour)
+   - Objectif : Définir les groupes et accès (magasinier, chef division, chef département, admin).
+   - Actions :
+     - Mettre à jour `security/ir.model.access.csv` et créer `security` record rules si nécessaire.
+     - Vérifier que les transitions critiques ne peuvent être exécutées que par les groupes adéquats.
+   - Critères d'acceptation : Règles applicables sur l'UI ; tests d'accès passés.
+
+5) Tests & QA (Est: 1-2 jours)
+   - Objectif : Couvrir les flows principaux par tests unitaires et tours (UI).
+   - Actions :
+     - Écrire tests pour modèles (création mouvement, calculs totaux, transitions).
+     - Ajouter tours (frontend) pour test scan/génération/validation rapide.
+   - Critères d'acceptation : Run local de la suite de tests OK.
+
+6) Déploiement & DevOps (Est: 1 jour)
+   - Objectif : Fournir un script pour copier/mettre à jour un addon dans un conteneur Docker (sans rebuild) et relancer Odoo si nécessaire.
+   - Actions :
+     - Écrire `scripts/deploy_addon.ps1` (PowerShell) et `scripts/deploy_addon.sh` (bash) qui :
+       1. Copie le dossier de l'addon dans le container (via `docker cp` ou mount bind).
+       2. Fixe permissions (chown) si besoin.
+       3. Redémarre le service Odoo (ou envoie `-u modulename` via `odoo-bin` dans le conteneur) pour recharger les modules.
+     - Documenter l'usage dans le README.
+   - Critères d'acceptation : Le script met à jour le code dans le container et le module peut être rechargé sans rebuild de l'image.
+
+7) Documentation & Release (Est: 0.5 jour)
+   - Objectif : Compléter `readme.md`, ajouter `CHANGELOG.md` et consignes d'installation, et le guide rapide pour devs.
+
+Priorités (MVP)
+----------------
+1. Stabilisation & compatibilité
+2. Workflow de validation (core flows Entrée/Sortie/Transfert)
+3. Integration codes-barres (scan simple + génération étiquette)
+4. Permissions
+5. Tests + Déploiement script
+
+Estimation globale : 7–10 jours-homme (selon disponibilité des spécifications métier et tests mobiles)
+
+Risques & questions ouvertes
+----------------------------
+- Logique de visibilité des boutons : veux-tu que je recrée exactement les règles `attrs` existantes (par ex. rendre un bouton invisible quand state in [...]) ? Si oui fournis la table des états et les règles par bouton.
+- Scanning mobile : as-tu une config Odoo mobile ou souhaites-tu l'utilisation de la vue web responsive + camera API ?
+- Impression d’étiquettes : format A4 ou étiquettes thermiques ? tailles/cols/rows ?
+
+Prochaine action (immédiate)
+----------------------------
+- Valider ce plan. Si OK, je commencerai par :
+  1) écrire le script `scripts/deploy_addon.ps1` pour copier/mettre à jour un addon dans le container et documenter son usage,
+  2) puis implémenter les transitions d'état et tests unitaires.
+
+Fichiers modifiés
+------------------
+- `plan.md` (ce fichier)
+
+Si tu veux, je peux maintenant générer le script de déploiement (PowerShell + bash) et l'ajouter au dépôt, ou commencer l'implémentation du workflow. Lequel préfères-tu que je fasse maintenant ?
 
 I'll analyze the module structure first to understand the current state and then add a plan.md file and update the module accordingly.
 

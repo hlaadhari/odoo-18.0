@@ -59,12 +59,10 @@
                         </group>
                     </sheet>
                     <footer>
-                        <button name="action_view_product" type="object" 
-                                string="Voir Produit" class="oe_highlight"
-                                attrs="{'invisible': [('product_id', '=', False)]}"/>
-                        <button name="action_view_stock" type="object" 
-                                string="Voir Stock"
-                                attrs="{'invisible': [('product_id', '=', False)]}"/>
+            <button name="action_view_product" type="object" 
+                string="Voir Produit" class="oe_highlight"/>
+            <button name="action_view_stock" type="object" 
+                string="Voir Stock"/>
                         <button string="Fermer" class="btn-secondary" special="cancel"/>
                     </footer>
                 </form>
@@ -94,14 +92,12 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <div name="button_box" position="inside">
-                    <button name="action_generate_steg_barcode" type="object" 
-                            class="oe_stat_button" icon="fa-barcode"
-                            string="Générer Code-barres"
-                            attrs="{'invisible': [('barcode', '!=', False)]}"/>
-                    <button name="action_print_barcode_label" type="object" 
-                            class="oe_stat_button" icon="fa-print"
-                            string="Imprimer Étiquette"
-                            attrs="{'invisible': [('barcode', '=', False)]}"/>
+            <button name="action_generate_steg_barcode" type="object" 
+                class="oe_stat_button" icon="fa-barcode"
+                string="Générer Code-barres"/>
+            <button name="action_print_barcode_label" type="object" 
+                class="oe_stat_button" icon="fa-print"
+                string="Imprimer Étiquette"/>
                 </div>
             </field>
         </record>

@@ -1,0 +1,49 @@
+/* STEG Dashboard - modern KPI layout */
+:root { --steg-blue:#0073b7; --steg-red:#e5332a; --steg-gray:#f4f4f4; --steg-dark:#263238; --card-border:#e6e8eb; }
+
+.steg_dashboard .o_form_sheet_bg { background: var(--steg-gray); }
+.steg_dashboard .o_form_sheet { background: transparent; box-shadow: none; }
+
+.steg_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 8px 0 20px 0;
+}
+
+.steg_kpi_card {
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+.steg_kpi_title { color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.steg_kpi_value { color: var(--steg-dark); font-size: 22px; font-weight: 700; margin-top: 6px; }
+.steg_kpi_hint { color: #9aa3ab; font-size: 12px; margin-top: 2px; }
+
+.steg_section {
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+.steg_section_header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.steg_section_title { font-size:16px; font-weight:600; color:var(--steg-dark); }
+.steg_badge_critical { background:#fee2e2; color:#b91c1c; border-radius:999px; padding:2px 8px; font-size:11px; }
+.steg_badge_low { background:#e0f2fe; color:#075985; border-radius:999px; padding:2px 8px; font-size:11px; }
+
+.steg_list_item { display:flex; align-items:center; justify-content:space-between; padding:10px 8px; border-top:1px solid var(--card-border); }
+.steg_list_item:first-child { border-top: none; }
+
+.steg_actions_row { display:flex; gap:10px; }
+.steg_actions_row .btn { border-radius:8px; }
+.steg_actions_row .btn-primary { background: var(--steg-blue) !important; border-color: var(--steg-blue) !important; }
+.steg_actions_row .btn-secondary { background: #546e7a !important; border-color: #546e7a !important; }
+.steg_actions_row .btn-outline-primary { color: var(--steg-blue) !important; border-color: var(--steg-blue) !important; }
+.steg_actions_row .btn-outline-secondary { color: #546e7a !important; border-color: #546e7a !important; }
+
+@media (max-width: 1400px) { .steg_kpi_grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) { .steg_kpi_grid { grid-template-columns: 1fr; } }
+
+
+

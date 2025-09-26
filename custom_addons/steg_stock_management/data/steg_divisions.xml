@@ -100,7 +100,6 @@
 
         <!-- Enregistrement dashboard par défaut -->
         <record id="steg_dashboard_default" model="steg.dashboard">
-            <field name="id">1</field>
         </record>
     </data>
 </odoo>

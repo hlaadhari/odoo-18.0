@@ -6,10 +6,10 @@
         <field name="model">steg.dashboard</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Tableau de bord STEG" create="false" edit="false" delete="false">
+            <form string="Tableau de bord STEG" create="false" edit="false" delete="false" class="steg_dashboard">
                 <header>
                     <button name="action_new_move_in" type="object" string="Nouvelle Entrée" class="btn-primary"/>
-                    <button name="action_new_move_out" type="object" string="Nouvelle Sortie" class="btn-primary"/>
+                    <button name="action_new_move_out" type="object" string="Nouvelle Sortie" class="btn-secondary"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -17,51 +17,65 @@
                         <h3>Tableau de bord - Société Tunisienne de l'Électricité et du Gaz</h3>
                     </div>
                     
-                    <!-- Statistiques principales -->
-                    <group string="📊 Statistiques">
-                        <group>
-                            <field name="total_products" string="Total Pièces"/>
-                            <field name="total_moves_today" string="Mouvements Aujourd'hui"/>
-                        </group>
-                        <group>
-                            <field name="pending_validations" string="En Attente Validation"/>
-                            <field name="total_divisions" string="Divisions Actives"/>
-                        </group>
-                    </group>
+                    <!-- KPI cards -->
+                    <div class="steg_kpi_grid">
+                        <div class="steg_kpi_card">
+                            <div class="steg_kpi_title">Total Pièces</div>
+                            <div class="steg_kpi_value"><field name="total_products" readonly="1" nolabel="1"/></div>
+                            <div class="steg_kpi_hint">Articles inventoriés</div>
+                        </div>
+                        <div class="steg_kpi_card">
+                            <div class="steg_kpi_title">Alertes Stock Bas</div>
+                            <div class="steg_kpi_value"><field name="low_stock_count" readonly="1" nolabel="1"/></div>
+                            <div class="steg_kpi_hint">Sous le minimum</div>
+                        </div>
+                        <div class="steg_kpi_card">
+                            <div class="steg_kpi_title">En attente</div>
+                            <div class="steg_kpi_value"><field name="pending_validations" readonly="1" nolabel="1"/></div>
+                            <div class="steg_kpi_hint">Validations</div>
+                        </div>
+                        <div class="steg_kpi_card">
+                            <div class="steg_kpi_title">Divisions Actives</div>
+                            <div class="steg_kpi_value"><field name="total_divisions" readonly="1" nolabel="1"/></div>
+                            <div class="steg_kpi_hint">Unités</div>
+                        </div>
+                    </div>
 
                     <!-- Alertes -->
-                    <group string="⚠️ Alertes Stock">
-                        <group>
-                            <field name="low_stock_count" string="Stock Bas"/>
-                            <field name="out_of_stock_count" string="Ruptures"/>
-                        </group>
-                        <group>
-                            <button name="action_view_low_stock" type="object" string="Voir Stock Bas" class="btn-warning"/>
-                            <button name="action_view_out_of_stock" type="object" string="Voir Ruptures" class="btn-danger"/>
-                        </group>
-                    </group>
+                    <div class="steg_section">
+                        <div class="steg_section_header">
+                            <div class="steg_section_title">Alertes Stock</div>
+                            <div class="steg_actions_row">
+                                <button name="action_view_low_stock" type="object" string="Voir Stock Bas" class="btn btn-outline-primary"/>
+                                <button name="action_view_out_of_stock" type="object" string="Voir Ruptures" class="btn btn-outline-secondary"/>
+                            </div>
+                        </div>
+                        <div class="steg_list_item">
+                            <div>Stock Bas</div>
+                            <div class="steg_badge_critical"><field name="low_stock_count" readonly="1" nolabel="1"/></div>
+                        </div>
+                        <div class="steg_list_item">
+                            <div>Ruptures</div>
+                            <div class="steg_badge_low"><field name="out_of_stock_count" readonly="1" nolabel="1"/></div>
+                        </div>
+                    </div>
                     
                     <!-- Répartition par division -->
-                    <group string="🏢 Répartition par Division">
-                        <group>
-                            <field name="telecom_products" string="Télécom"/>
-                            <field name="teleconduite_products" string="Téléconduite"/>
-                        </group>
-                        <group>
-                            <field name="scada_products" string="SCADA"/>
-                            <field name="common_products" string="Communes"/>
-                        </group>
-                    </group>
+                    <div class="steg_section" style="margin-top:12px;">
+                        <div class="steg_section_header">
+                            <div class="steg_section_title">Répartition par Division</div>
+                        </div>
+                        <div class="steg_list_item"><div>Télécom</div><div class="steg_badge_low"><field name="telecom_products" readonly="1" nolabel="1"/></div></div>
+                        <div class="steg_list_item"><div>Téléconduite</div><div class="steg_badge_low"><field name="teleconduite_products" readonly="1" nolabel="1"/></div></div>
+                        <div class="steg_list_item"><div>SCADA</div><div class="steg_badge_low"><field name="scada_products" readonly="1" nolabel="1"/></div></div>
+                        <div class="steg_list_item"><div>Communes</div><div class="steg_badge_low"><field name="common_products" readonly="1" nolabel="1"/></div></div>
+                    </div>
 
-                    <!-- Actions rapides -->
+                    <!-- Actions rapides (éviter la duplication avec l'en-tête) -->
                     <group string="⚡ Actions Rapides">
                         <group>
-                            <button name="action_new_move_in" type="object" string="➕ Nouvelle Entrée" class="btn-success"/>
-                            <button name="action_view_products" type="object" string="📦 Gérer Pièces" class="btn-primary"/>
-                        </group>
-                        <group>
-                            <button name="action_new_move_out" type="object" string="➖ Nouvelle Sortie" class="btn-danger"/>
-                            <button name="action_view_moves" type="object" string="📋 Historique" class="btn-info"/>
+                            <button name="action_view_products" type="object" string="📦 Gérer Pièces" class="btn-outline-primary"/>
+                            <button name="action_view_moves" type="object" string="📋 Historique" class="btn-outline-secondary"/>
                         </group>
                     </group>
                 </sheet>
@@ -75,8 +89,8 @@
         <field name="res_model">steg.dashboard</field>
         <field name="view_mode">form</field>
         <field name="target">current</field>
-        <field name="context">{'form_view_initial_mode': 'readonly', 'default_id': 1}</field>
-        <field name="res_id">1</field>
+        <field name="context">{'form_view_initial_mode': 'readonly'}</field>
+        <field name="res_id" ref="steg_dashboard_default"/>
     </record>
 
     <!-- Menu principal STEG (remplace l'ancien) -->

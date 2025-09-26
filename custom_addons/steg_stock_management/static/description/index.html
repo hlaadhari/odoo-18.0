@@ -4,10 +4,23 @@
     <meta charset="utf-8">
     <title>STEG Stock Management</title>
     <style>
+        /* Palette STEG */
+        :root { --steg-blue: #0073b7; --steg-red: #e5332a; --steg-gray: #f4f4f4; --steg-dark: #263238; }
         body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { background: #1f4e79; color: white; padding: 20px; border-radius: 5px; }
+        .header { background: var(--steg-blue); color: white; padding: 20px; border-radius: 5px; }
         .content { margin: 20px 0; }
-        .feature { margin: 10px 0; padding: 10px; background: #f8f9fa; border-left: 4px solid #007bff; }
+        .feature { margin: 10px 0; padding: 10px; background: #ffffff; border: 1px solid #e0e0e0; border-left: 4px solid var(--steg-blue); border-radius: 6px; }
+        /* Scoped dashboard styles (appliqués via classe .steg_dashboard sur la vue) */
+        .steg_dashboard .o_form_sheet_bg { background: var(--steg-gray); }
+        .steg_dashboard .oe_title h1 { color: var(--steg-dark); }
+        .steg_dashboard .btn-primary { background-color: var(--steg-blue) !important; border-color: var(--steg-blue) !important; }
+        .steg_dashboard .btn-secondary { background-color: #546e7a !important; border-color: #546e7a !important; }
+        .steg_dashboard .btn-outline-primary { color: var(--steg-blue) !important; border-color: var(--steg-blue) !important; }
+        .steg_dashboard .btn-outline-primary:hover { background-color: var(--steg-blue) !important; color: #fff !important; }
+        .steg_dashboard .btn-outline-secondary { color: #546e7a !important; border-color: #546e7a !important; }
+        .steg_dashboard .btn-outline-secondary:hover { background-color: #546e7a !important; color: #fff !important; }
+        .steg_dashboard .o_group .o_inner_group { background: #fff; border-radius: 8px; border: 1px solid #e0e0e0; padding: 12px; }
+        .steg_dashboard .o_group .o_td_label { color: #455a64; }
     </style>
 </head>
 <body>

@@ -176,3 +176,97 @@ class StegStockMove(models.Model):
         return False
 
 
+class StegStockRequest(models.Model):
+    _name = 'steg.stock.request'
+    _description = 'Demande de stock (Entrée/Sortie)'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'create_date desc'
+
+    name = fields.Char(string='Référence', required=True, copy=False, default=lambda self: _('Nouveau'))
+    request_type = fields.Selection([
+        ('in', 'Demande d\'Entrée'),
+        ('out', 'Demande de Sortie'),
+    ], string='Type', required=True, default='out', tracking=True)
+    division_id = fields.Many2one('steg.division', string='Division', required=True, tracking=True)
+    user_id = fields.Many2one('res.users', string='Demandeur', default=lambda self: self.env.user, tracking=True)
+    state = fields.Selection([
+        ('draft', 'Brouillon'),
+        ('submitted', 'Soumise'),
+        ('approved', 'Approuvée'),
+        ('rejected', 'Rejetée'),
+        ('done', 'Terminée'),
+        ('cancelled', 'Annulée'),
+    ], string='État', default='draft', tracking=True)
+    reason = fields.Text(string='Motif')
+
+    line_ids = fields.One2many('steg.stock.request.line', 'request_id', string='Lignes')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name') in (False, _('Nouveau')):
+            vals['name'] = self.env['ir.sequence'].next_by_code('steg.stock.request') or _('Nouveau')
+        return super().create(vals)
+
+    # Workflow
+    def action_submit(self):
+        for req in self:
+            if not req.line_ids:
+                raise UserError("Ajoutez au moins une ligne de produit.")
+            req.state = 'submitted'
+            req.message_post(body='Demande soumise')
+
+    def action_approve(self):
+        for req in self:
+            if req.state != 'submitted':
+                raise UserError("Seules les demandes soumises peuvent être approuvées.")
+            # Permission basique: manager division ou admin
+            if not (self.env.user.has_group('base.group_system') or req.division_id.manager_id == self.env.user or req.division_id.department_manager_id == self.env.user):
+                raise UserError("Vous n\'avez pas les droits pour approuver cette demande.")
+            req.state = 'approved'
+            req.message_post(body='Demande approuvée')
+
+    def action_reject(self):
+        for req in self:
+            if req.state not in ('submitted', 'approved'):
+                raise UserError("Seules les demandes soumises ou approuvées peuvent être rejetées.")
+            req.state = 'rejected'
+            req.message_post(body='Demande rejetée')
+
+    def action_process(self):
+        for req in self:
+            if req.state != 'approved':
+                raise UserError("La demande doit être approuvée.")
+            # Créer des mouvements de stock agrégés par ligne
+            for line in req.line_ids:
+                move_vals = {
+                    'division_id': req.division_id.id,
+                    'product_id': line.product_id.id,
+                    'quantity': line.quantity,
+                    'move_type': 'in' if req.request_type == 'in' else 'out',
+                    'description': req.reason or '',
+                }
+                move = self.env['steg.stock.move'].create(move_vals)
+                move.action_submit_for_validation()
+                move.action_validate()
+                move.action_execute()
+            req.state = 'done'
+            req.message_post(body='Demande traitée et mouvements créés')
+
+    def action_cancel(self):
+        for req in self:
+            if req.state == 'done':
+                raise UserError("Impossible d\'annuler une demande terminée.")
+            req.state = 'cancelled'
+
+
+class StegStockRequestLine(models.Model):
+    _name = 'steg.stock.request.line'
+    _description = 'Ligne de demande de stock'
+
+    request_id = fields.Many2one('steg.stock.request', string='Demande', required=True, ondelete='cascade')
+    product_id = fields.Many2one('steg.product', string='Produit', required=True)
+    quantity = fields.Float(string='Quantité', required=True, digits=(16, 2), default=1.0)
+    # product.product already exposes uom_id (related to template). Use it directly.
+    uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', store=True, readonly=True)
+
+

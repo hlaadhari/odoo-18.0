@@ -97,6 +97,75 @@
     </record>
 
     <!-- Menu supprimé - maintenant géré dans steg_dashboard_views.xml -->
+    <!-- Requests: list and form -->
+    <record id="view_steg_stock_request_tree" model="ir.ui.view">
+        <field name="name">steg.stock.request.list</field>
+        <field name="model">steg.stock.request</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'done'" decoration-danger="state == 'rejected'" decoration-warning="state == 'submitted'">
+                <field name="name"/>
+                <field name="request_type"/>
+                <field name="division_id"/>
+                <field name="user_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_steg_stock_request_form" model="ir.ui.view">
+        <field name="name">steg.stock.request.form</field>
+        <field name="model">steg.stock.request</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Soumettre" class="btn-primary"/>
+                    <button name="action_approve" type="object" string="Approuver" class="btn-success"/>
+                    <button name="action_reject" type="object" string="Rejeter" class="btn-secondary"/>
+                    <button name="action_process" type="object" string="Traiter" class="btn-success"/>
+                    <button name="action_cancel" type="object" string="Annuler" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="request_type"/>
+                            <field name="division_id"/>
+                            <field name="user_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="reason" placeholder="Motif"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes">
+                            <field name="line_ids">
+                                <form>
+                                    <tree editable="bottom">
+                                        <field name="product_id" required="1"/>
+                                        <field name="quantity" required="1"/>
+                                        <field name="uom_id" optional="show"/>
+                                    </tree>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_steg_stock_request" model="ir.actions.act_window">
+        <field name="name">Demandes de Stock</field>
+        <field name="res_model">steg.stock.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_steg_requests" name="Demandes" parent="steg_stock_management.menu_steg_operations" action="action_steg_stock_request" sequence="15"/>
+    
 </odoo>
 
 

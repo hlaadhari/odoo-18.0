@@ -24,6 +24,9 @@ class StegProduct(models.Model):
     # Codes-barres
     barcode = fields.Char(string="Code-barres", help="Code-barres de la pièce")
     
+    # Image de la pièce
+    image = fields.Image(string="Photo", help="Photo de la pièce de rechange")
+    
     # Informations supplémentaires
     description = fields.Text(string="Description")
     category = fields.Char(string="Catégorie")
@@ -31,6 +34,8 @@ class StegProduct(models.Model):
     unit_price = fields.Float(string="Prix unitaire", digits=(16, 2))
     min_qty = fields.Float(string="Stock minimum", digits=(16, 2), default=1.0)
     max_qty = fields.Float(string="Stock maximum", digits=(16, 2))
+    uom_id = fields.Many2one('uom.uom', string='Unité de mesure',
+        help="Unité de mesure utilisée pour ce produit")
     
     # États et alertes
     state = fields.Selection([
@@ -51,12 +56,12 @@ class StegProduct(models.Model):
     @api.depends('qty_on_hand', 'qty_reserved')
     def _compute_qty_available(self):
         for product in self:
-            product.qty_available = product.qty_on_hand - product.qty_reserved
+            product.qty_available = (product.qty_on_hand or 0.0) - (product.qty_reserved or 0.0)
 
     @api.depends('qty_on_hand', 'min_qty')
     def _compute_low_stock_alert(self):
         for product in self:
-            product.low_stock_alert = product.qty_on_hand <= product.min_qty
+            product.low_stock_alert = (product.qty_on_hand or 0.0) <= (product.min_qty or 0.0)
 
     @api.model
     def create(self, vals):
@@ -85,8 +90,11 @@ class StegProduct(models.Model):
             self.name = self.product_id.display_name
         if self.product_id and not self.default_code:
             self.default_code = self.product_id.default_code
-        if self.product_id and not self.barcode:
-            self.barcode = self.product_id.barcode
+        if self.product_id:
+            if not self.barcode:
+                self.barcode = self.product_id.barcode
+            if not self.uom_id:
+                self.uom_id = self.product_id.uom_id.id
 
     def action_generate_barcode(self):
         """Action pour générer/régénérer le code-barres"""

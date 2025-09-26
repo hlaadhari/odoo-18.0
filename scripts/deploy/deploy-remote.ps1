@@ -135,7 +135,7 @@ if (-not $NoCopy) {
         Write-Host "Creating archive: $Archive"
         & tar -czf $Archive --exclude=".git" --exclude=".venv" --exclude="__pycache__" --exclude="*.pyc" -C $LocalRoot .
         Write-Host "Transferring archive to remote /tmp/odoo-deploy.tgz"
-        & scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $Archive "$RemoteUser@$RemoteHost:/tmp/odoo-deploy.tgz"
+        & scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $Archive "${RemoteUser}@${RemoteHost}:/tmp/odoo-deploy.tgz"
         Write-Host "Extracting archive on remote into $RemoteDir"
         Invoke-SSH-Sudo "mkdir -p '$RemoteDir' && tar -xzf /tmp/odoo-deploy.tgz -C '$RemoteDir' --strip-components=0 && rm -f /tmp/odoo-deploy.tgz && chown -R '$RemoteUser':'$RemoteUser' '$RemoteDir'"
         Remove-Item -Force $Archive

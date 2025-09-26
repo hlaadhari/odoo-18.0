@@ -65,12 +65,12 @@ Plan de travail (tâches détaillées)
 6) Déploiement & DevOps (Est: 1 jour)
    - Objectif : Fournir un script pour copier/mettre à jour un addon dans un conteneur Docker (sans rebuild) et relancer Odoo si nécessaire.
    - Actions :
-     - Écrire `scripts/deploy_addon.ps1` (PowerShell) et `scripts/deploy_addon.sh` (bash) qui :
-       1. Copie le dossier de l'addon dans le container (via `docker cp` ou mount bind).
-       2. Fixe permissions (chown) si besoin.
-       3. Redémarre le service Odoo (ou envoie `-u modulename` via `odoo-bin` dans le conteneur) pour recharger les modules.
-     - Documenter l'usage dans le README.
-   - Critères d'acceptation : Le script met à jour le code dans le container et le module peut être rechargé sans rebuild de l'image.
+     - ✅ Ajouter `scripts/deploy_addon.ps1` (PowerShell) et `scripts/deploy_addon.sh` (bash) qui :
+       1. Copient le dossier de l'addon dans le conteneur (`docker cp`).
+       2. Appliquent des permissions sûres.
+       3. Lancent la mise à jour du module via `odoo-bin -u modulename --stop-after-init`.
+     - ✅ Documenter l'usage dans le README.
+   - Critères d'acceptation : Le script met à jour le code dans le container et le module peut être rechargé sans rebuild de l'image. (Atteint)
 
 7) Documentation & Release (Est: 0.5 jour)
    - Objectif : Compléter `readme.md`, ajouter `CHANGELOG.md` et consignes d'installation, et le guide rapide pour devs.
@@ -93,9 +93,7 @@ Risques & questions ouvertes
 
 Prochaine action (immédiate)
 ----------------------------
-- Valider ce plan. Si OK, je commencerai par :
-  1) écrire le script `scripts/deploy_addon.ps1` pour copier/mettre à jour un addon dans le container et documenter son usage,
-  2) puis implémenter les transitions d'état et tests unitaires.
+- Implémenter les transitions d'état (workflow Entrée/Sortie/Transfert/Inventaire) dans `models/steg_stock.py` avec contrôles de permissions et tests unitaires.
 
 Fichiers modifiés
 ------------------

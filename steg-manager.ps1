@@ -4,7 +4,7 @@
 
 param(
     [Parameter(Position=0)]
-    [ValidateSet("start", "stop", "restart", "status", "install", "backup", "restore", "logs", "clean", "help", "update")]
+    [ValidateSet("start", "stop", "restart", "status", "install", "backup", "restore", "logs", "clean", "help", "update", "upgrade")]
     [string]$Action = $null
 )
 # Configuration
@@ -53,6 +53,7 @@ function Update-STEGAddon {
 # Configuration
 $COMPOSE_FILE = "docker-compose-simple.yml"
 $DB_NAME = "steg_stock"
+$DB_HOST = "db"
 $ADMIN_EMAIL = "admin@steg.com.tn"
 $ADMIN_PASSWORD = "steg_admin_2024"
 $ODOO_URL = "http://localhost:8069"
@@ -255,6 +256,48 @@ function Install-STEGModule {
     }
 }
 
+function Upgrade-STEGModule {
+    Show-Header
+    Write-ColorText "⬆️ MISE À JOUR DU MODULE STEG (odoo -u)" "Blue"
+
+    if (-not (Test-ServicesRunning)) {
+        Write-ColorText "❌ Services non démarrés. Utilisez: .\steg-manager.ps1 start" "Red"
+        return
+    }
+
+    # Attendre que PostgreSQL soit prêt
+    Write-ColorText "⏳ Vérification de la disponibilité de la base de données..." "Blue"
+    $maxTries = 10
+    $ready = $false
+    for ($i=1; $i -le $maxTries; $i++) {
+        try {
+            $res = docker-compose -f $COMPOSE_FILE exec -T db pg_isready -h $DB_HOST -U odoo -d $DB_NAME 2>$null
+            if ($LASTEXITCODE -eq 0 -or ($res -match "accepting connections")) { $ready = $true; break }
+        } catch {}
+        Start-Sleep -Seconds 3
+    }
+    if (-not $ready) {
+        Write-ColorText "⚠️ La base n'est pas prête. Tentative de mise à jour quand même..." "Yellow"
+    }
+
+    try {
+        Write-ColorText "🚀 Préparation des services (restart db puis odoo)..." "Blue"
+        docker-compose -f $COMPOSE_FILE restart db
+        Start-Sleep -Seconds 5
+        docker-compose -f $COMPOSE_FILE restart odoo
+        Start-Sleep -Seconds 10
+
+        Write-ColorText "🚀 Lancement de la mise à jour du module dans le conteneur..." "Blue"
+        docker-compose -f $COMPOSE_FILE exec -T odoo bash -lc "export PGHOST=$DB_HOST; odoo -d '$DB_NAME' -u steg_stock_management --stop-after-init"
+        Write-ColorText "🔄 Redémarrage du service Odoo..." "Blue"
+        docker-compose -f $COMPOSE_FILE restart odoo
+        Start-Sleep -Seconds 15
+        Write-ColorText "✅ Module mis à jour avec succès." "Green"
+    } catch {
+        Write-ColorText "❌ Échec de la mise à jour: $($_.Exception.Message)" "Red"
+    }
+}
+
 function Backup-Database {
     Show-Header
     Write-ColorText "💾 SAUVEGARDE BASE DE DONNÉES" "Green"
@@ -423,8 +466,9 @@ if (-not $Action) {
     Write-ColorText "  7. restore   - Restaurer une sauvegarde" "White"
     Write-ColorText "  8. logs      - Afficher les logs" "White"
     Write-ColorText "  9. clean     - Nettoyer complètement le système" "White"
-    Write-ColorText " 10. update    - Mettre à jour l'addon STEG en ligne" "White"
-    Write-ColorText " 11. help      - Afficher l'aide" "White"
+    Write-ColorText " 10. update    - Mettre à jour l'addon STEG (copie locale + restart)" "White"
+    Write-ColorText " 11. upgrade   - Mettre à jour le module (odoo -u steg_stock_management)" "White"
+    Write-ColorText " 12. help      - Afficher l'aide" "White"
     $choice = Read-Host "Entrez le numéro de l'action souhaitée"
     switch ($choice) {
         "1" { $Action = "start" }
@@ -437,7 +481,8 @@ if (-not $Action) {
         "8" { $Action = "logs" }
         "9" { $Action = "clean" }
         "10" { $Action = "update" }
-        "11" { $Action = "help" }
+        "11" { $Action = "upgrade" }
+        "12" { $Action = "help" }
         default { $Action = "help" }
     }
 }
@@ -453,6 +498,7 @@ switch ($Action.ToLower()) {
     "logs" { Show-Logs }
     "clean" { Clean-System }
     "update" { Update-STEGAddon }
+    "upgrade" { Upgrade-STEGModule }
     "help" { Show-Help }
     default { Show-Help }
 }

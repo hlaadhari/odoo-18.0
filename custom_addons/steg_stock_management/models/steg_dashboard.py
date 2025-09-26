@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 class StegDashboard(models.Model):
     _name = 'steg.dashboard'
     _description = 'Tableau de bord STEG'
+    _rec_name = 'name'
     
     @api.model
     def get_dashboard_data(self):
@@ -15,6 +16,9 @@ class StegDashboard(models.Model):
         if not dashboard:
             dashboard = self.with_context(skip_default_get=True).create({})
         return dashboard
+
+    # Libellé affiché (évite "steg.dashboard,1")
+    name = fields.Char(string='Libellé', default='Tableau de bord STEG')
 
     # Statistiques générales
     total_products = fields.Integer(string="Total pièces", compute="_compute_stats")
